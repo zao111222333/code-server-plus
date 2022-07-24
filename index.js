@@ -72,19 +72,14 @@ var server = http.createServer(app);
 
 // logout
 app.get("/logout", function (req, res) {
-  const attempt = req.session.attempt;
-  req.session.destroy();
-  fs.readFile(path.join(__dirname + '/static/logout.html'), 'utf8', function (err,data) {
-    if (err) {
-      return console.log(err);
-    }
-    if (isNumeric(attempt)) var data = data.replace('attempt = \'\'', 'attempt = \''+attempt+'\'');
-    res.send(data);
-  });
+  if (req.session.login) {
+    res.sendFile(path.join(__dirname + '/static/logout.html'));
+  } else {
+    res.sendFile(path.join(__dirname + '/static/logout_not_login.html'));
+  }
 });
 app.post('/logout', function(req, res) {
-  const attempt = req.body.attempt;
-	if (isNumeric(attempt)) req.session.attempt = Number(attempt);
+  req.session.destroy();
   res.redirect('/login');
 });
 
@@ -226,13 +221,9 @@ app.post('/admin/create_user', function(req, res) {
         });
       }
     });
-    
-    
-    
   } else {
     res.redirect('/admin');
   }
-  
 });
 
 app.get('/webdav', function(req, res) {

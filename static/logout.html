@@ -4,28 +4,15 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,minimum-scale=1">
 		<title>Logout</title>
-        <!-- the form awesome library is used to add icons to our form -->
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-        <!-- include the stylesheet file -->
         <link href="/code-server-plus/static/global.css" rel="stylesheet" type="text/css">
         <link href="/code-server-plus/static/logout.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
         <div class="logout">
             <form action="/logout" method="post" id="logout">
-                <input type="hidden" name="attempt" placeholder="attempt" id="attempt" required>
                 <input type="submit" value="logout" id="logout">
             </form>
         </div>
 	</body>
 </html>
-
-<script type="text/javascript">
-	const attempt = '';
-    window.onload = function(){
-		document.getElementById("attempt").value = attempt;
-	};
-	function isNumeric(value) {
-	    return /^-?\d+$/.test(value);
-	}
-</script>

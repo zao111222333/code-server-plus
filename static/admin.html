@@ -11,35 +11,84 @@
         <link href="/code-server-plus/static/admin.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
-		<div class="create_user" id="create_user">
-		<!-- <div class="create_user" style="display: none;"> -->
-			<h1>Create New User</h1>
-			<form action="/admin/create_user" method="post" id="create_user_form">
-				<label for="username">
-					<!-- font awesome icon -->
-					<i class="fas fa-user"></i>
-				</label>
-				<input type="text" name="newusername" placeholder="USERNAME" id="newusername" required>
-				<br>
-				<label for="password">
-					<i class="fas fa-lock"></i>
-				</label>
-				<input type="password" name="newpassword" placeholder="PASSWORD" id="newpassword" minlength="6" required>
-				<label class="form-control" for="checkbox">
-					<input type="checkbox" name="sudo" id="sudo" />
-					With SUDO Privileges
-				</label>
-				<label style="height: 20px; width:200px; background-color: #00000000;"></label>
-				<label class="form-control" for="checkbox">
-					<input type="checkbox" name="server" id="server" checked/>
-					Start Server After Created
-				</label>
-				<label for="error">
-					<p id="error"></p>
-					<p id="msg"></p>
-				</label>
-				<input type="submit" value="Create" id="submit">
-			</form>
+		<div class="header">
+			<h1>Admin Panel</h1>
+		</div>
+		<div class="clearfix">
+			<div class="column menu">
+			  <ul>
+				<a href="#create_user"><li id="index_create_user">Create User</li></a>
+				<a href="#manage_user"><li id="index_manage_user">Manage User</li></a>
+				<a href="/"><li style="background-color: #3578ca; color: white;">Start Code</li></a>
+				<a href="/logout"><li style="background-color: #444444; color: white;">Logout</li></a>
+			  </ul>
+			</div>
+			<div class="column content">
+				<div class="create_user" id="create_user">
+				<!-- <div class="create_user" style="display: none;"> -->
+					<h1>Create New User</h1>
+					<form action="/admin/create_user" method="post" id="create_user_form">
+						<label for="username">
+							<!-- font awesome icon -->
+							<i class="fas fa-user"></i>
+						</label>
+						<input type="text" name="newusername" placeholder="USERNAME" id="newusername" required>
+						<br>
+						<label for="password">
+							<i class="fas fa-lock"></i>
+						</label>
+						<input type="password" name="newpassword" placeholder="PASSWORD" id="newpassword" minlength="6" required>
+						<label class="form-control" for="checkbox">
+							<input type="checkbox" name="sudo" id="sudo" />
+							With SUDO Privileges
+						</label>
+						<label style="height: 20px; width:200px; background-color: #00000000;"></label>
+						<label class="form-control" for="checkbox">
+							<input type="checkbox" name="server" id="server" checked/>
+							Connect After Created
+						</label>
+						<label for="error">
+							<p id="error"></p>
+							<p id="msg"></p>
+						</label>
+						<input type="submit" value="Create" id="submit">
+					</form>
+				</div>
+				<div class="create_user" id="manage_user" style="display: none;">
+					<!-- <div class="create_user" style="display: none;"> -->
+						<h1>Manage User</h1>
+						<form action="/admin/create_user" method="post" id="create_user_form">
+							<label for="username">
+								<!-- font awesome icon -->
+								<i class="fas fa-user"></i>
+							</label>
+							<input type="text" name="username" placeholder="USER1" id="user1" disabled>
+							<label for="username">
+								<!-- font awesome icon -->
+								<i class="fas fa-user"></i>
+							</label>
+							<input type="text" name="username" placeholder="USER2" id="user2" disabled>
+							<label for="username">
+								<!-- font awesome icon -->
+								<i class="fas fa-user"></i>
+							</label>
+							<input type="text" name="username" placeholder="USER3" id="user3" disabled>
+
+							<label for="username"><i class="fas fa-user"></i></label><div class="user_info">
+								user4 on
+								<label class="form-control" for="checkbox">
+									<input type="checkbox" name="server" id="server" checked/>
+									turn on connect
+								</label>
+							</div>
+							
+							<label for="error">
+								<p id="error"></p>
+								<p id="msg"></p>
+							</label>
+							<input type="submit" value="Comfirm" id="submit">
+						</form>
+				</div>
 		</div>
 	</body>
 </html>
@@ -54,8 +103,27 @@
 	const username = '';
 	const newusername = '';
     window.onload = function(){
+		if (!window.location.hash) {
+			window.location.href = '#create_user'; 
+		}
 		document.getElementById("newusername").value = newusername;
 		if (errType=="create user") document.getElementById('error').innerHTML = errMsg;
 		if (msgType=="create user") document.getElementById('msg').innerHTML = msg;
+		$(window).on('hashchange', function(){
+			if (window.location.hash=="#create_user") {
+				$('#create_user').css('display','inherit');
+				$('#manage_user').css('display','none');
+				$('#index_create_user').css('background-color','#e1cc60');
+				$('#index_manage_user').css('background-color','#fbfdf8');
+			}
+			if (window.location.hash=="#manage_user") {
+				$('#create_user').css('display','none');
+				$('#manage_user').css('display','inherit');
+				$('#index_create_user').css('background-color','#fbfdf8');
+				$('#index_manage_user').css('background-color','#e1cc60');
+			}
+		}).trigger('hashchange');
 	}
+	
+		
 </script>
