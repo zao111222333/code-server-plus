@@ -1,0 +1,118 @@
+.message {
+  width: 400px;
+  /* background-color: #fbfdf8; */
+  /* box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3); */
+  margin: 200px auto;
+}
+.message h1 {
+  text-align: left;
+  color: #fbfdf8;;
+  font-size: 24px;
+  padding: 0 0 0 30px;
+  /* border-bottom: 1px solid #dee0e4; */
+}
+
+.create_user {
+    width: 400px;
+    background-color: #fbfdf8;
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+    margin: 100px auto;
+}
+.create_user h1 {
+    text-align: left;
+    color: #444444;
+    font-size: 24px;
+    padding: 30px 0 20px 30px;
+    border-bottom: 1px solid #dee0e4;
+}
+
+.create_user #error {
+    text-align: left;
+    color: red;
+    font-size: 16px;
+    padding: 0 0 0 0;
+    margin-top: -10px;
+    margin-bottom: 0px;
+}
+
+.create_user #attempt {
+    text-align: left;
+    color: #cccc00;
+    font-size: 16px;
+    padding: 0 0 0 0;
+    margin-top: -20px;
+    margin-bottom: 0px;
+}
+
+.create_user form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 20px;
+}
+.create_user form label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background-color: #d69f27;
+    color: #ffffff;
+}
+
+.create_user form label p#msg {
+  color: green;
+  font-weight: bold;
+}
+
+.create_user form label[for=error] {
+  display: flex;
+  width: 300px;
+  height: 10px;
+  background-color: #ffffff00;
+  flex-wrap: nowrap;
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.create_user form label[for=checkbox] {
+    display: flex;
+    width: 300px;
+    height: 10px;
+    background-color: #ffffff00;
+    margin-top: -5px;
+    color: #757575;
+    flex-wrap: nowrap;
+    /* flex-direction: column; */
+    justify-content: flex-start;
+    align-items: center;
+}
+
+
+
+.create_user form input[type="password"], .create_user form input[type="text"] {
+    width: 310px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+.create_user form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    background-color: #d69f27;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
+}
+
+.create_user form input[type="submit"]:hover {
+  background-color: #9e751c;
+    transition: background-color 0.2s;
+}
+
+

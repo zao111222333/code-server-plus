@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1">
+		<title>Admin</title>
+        <!-- the form awesome library is used to add icons to our form -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+        <!-- include the stylesheet file -->
+        <link href="/code-server-plus/static/global.css" rel="stylesheet" type="text/css">
+        <link href="/code-server-plus/static/admin.css" rel="stylesheet" type="text/css">
+	</head>
+	<body>
+		<div class="create_user" id="create_user">
+		<!-- <div class="create_user" style="display: none;"> -->
+			<h1>Create New User</h1>
+			<form action="/admin/create_user" method="post" id="create_user_form">
+				<label for="username">
+					<!-- font awesome icon -->
+					<i class="fas fa-user"></i>
+				</label>
+				<input type="text" name="newusername" placeholder="USERNAME" id="newusername" required>
+				<br>
+				<label for="password">
+					<i class="fas fa-lock"></i>
+				</label>
+				<input type="password" name="newpassword" placeholder="PASSWORD" id="newpassword" minlength="6" required>
+				<label class="form-control" for="checkbox">
+					<input type="checkbox" name="sudo" id="sudo" />
+					With SUDO Privileges
+				</label>
+				<label style="height: 20px; width:200px; background-color: #00000000;"></label>
+				<label class="form-control" for="checkbox">
+					<input type="checkbox" name="server" id="server" checked/>
+					Start Server After Created
+				</label>
+				<label for="error">
+					<p id="error"></p>
+					<p id="msg"></p>
+				</label>
+				<input type="submit" value="Create" id="submit">
+			</form>
+		</div>
+	</body>
+</html>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+	const msg = '';
+	const msgType = '';
+	const errMsg = '';
+	const errType = '';
+	const attempt = '';
+	const username = '';
+	const newusername = '';
+    window.onload = function(){
+		document.getElementById("newusername").value = newusername;
+		if (errType=="create user") document.getElementById('error').innerHTML = errMsg;
+		if (msgType=="create user") document.getElementById('msg').innerHTML = msg;
+	}
+</script>

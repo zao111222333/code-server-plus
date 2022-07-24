@@ -1,0 +1,19 @@
+{
+  "name": "code-server-plus",
+  "version": "1.0.0",
+  "description": "multi-user code-server, login based on linux user's auth",
+  "main": "index.js",
+  "dependencies": {
+    "authenticate-pam": "^1.0.5",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.0",
+    "express-session": "^1.17.3",
+    "http-proxy": "^v1.18.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/zao111222333/code-server-plus.git"
+  },
+  "author": "junzhuo",
+  "license": "MIT"
+}
