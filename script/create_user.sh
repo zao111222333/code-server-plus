@@ -17,5 +17,5 @@ cp /usr/share/code-server/User/settings.json    ${HOME_}/.local/share/code-serve
 cp /usr/share/code-server/User/keybindings.json ${HOME_}/.local/share/code-server/User/keybindings.json
 ln -s /usr/share/code-server/extensions ${HOME_}/.local/share/code-server/extensions
 chown -R ${NEWUSER} ${HOME_}
-rm -f ${SOCK_DIR}/code-server@${NEWUSER}.sock
+
 echo 'done'
