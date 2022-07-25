@@ -168,6 +168,7 @@ app.post('/admin/create_user', function(req, res) {
   if (req.session.userName==userAdmin) {
     let newusername = req.body.newusername;
     let newpassword = req.body.newpassword;
+    let newpassword_check = req.body.newpassword_check;
     let sudo = true;
     if (req.body.sudo) {
       sudo = true;
@@ -180,6 +181,10 @@ app.post('/admin/create_user', function(req, res) {
     } else {
       server = false;
     }
+    if (!(newpassword_check==newpassword)) {
+      createErr("Passwords Do NOT Match",newusername,req,res);
+      return;
+    };
     exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
       if (error) {
         createErr(error.message,newusername,req,res);

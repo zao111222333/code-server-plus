@@ -6,13 +6,15 @@
 		<title>Admin</title>
         <!-- the form awesome library is used to add icons to our form -->
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css"> -->
+		<link href="https://site-assets.fontawesome.com/releases/v6.0.0/css/all.css" rel="stylesheet">
         <!-- include the stylesheet file -->
         <link href="/code-server-plus/static/global.css" rel="stylesheet" type="text/css">
         <link href="/code-server-plus/static/admin.css" rel="stylesheet" type="text/css">
 	</head>
 	<body>
 		<div class="header">
-			<h1>Admin Panel</h1>
+			Admin Panel
 		</div>
 		<div class="clearfix">
 			<div class="column menu">
@@ -38,9 +40,13 @@
 							<i class="fas fa-lock"></i>
 						</label>
 						<input type="password" name="newpassword" placeholder="PASSWORD" id="newpassword" minlength="6" required>
+						<label for="password">
+							<i class="fas fa-lock"></i>
+						</label>
+						<input type="password" name="newpassword_check" placeholder="PASSWORD AGAIN" id="newpassword_check" minlength="6" required>
 						<label class="form-control" for="checkbox">
 							<input type="checkbox" name="sudo" id="sudo" />
-							With SUDO Privileges
+							Administrator & SUDO Privileges
 						</label>
 						<label style="height: 20px; width:200px; background-color: #00000000;"></label>
 						<label class="form-control" for="checkbox">
@@ -57,36 +63,43 @@
 				<div class="create_user" id="manage_user" style="display: none;">
 					<!-- <div class="create_user" style="display: none;"> -->
 						<h1>Manage User</h1>
-						<form action="/admin/create_user" method="post" id="create_user_form">
-							<label for="username">
+						<form action="/admin/create_user" method="post" id="manage_user_form">
+							<label for="admin">
 								<!-- font awesome icon -->
 								<i class="fas fa-user"></i>
 							</label>
-							<input type="text" name="username" placeholder="USER1" id="user1" disabled>
-							<label for="username">
+							<input type="text" name="username" placeholder="Admin1" id="user1" disabled>
+							<label for="admin">
 								<!-- font awesome icon -->
 								<i class="fas fa-user"></i>
 							</label>
-							<input type="text" name="username" placeholder="USER2" id="user2" disabled>
-							<label for="username">
+							<input type="text" name="username" placeholder="Admin2" id="user2" disabled>
+							<label for="user">
 								<!-- font awesome icon -->
 								<i class="fas fa-user"></i>
 							</label>
-							<input type="text" name="username" placeholder="USER3" id="user3" disabled>
+							<input type="text" name="username" placeholder="USER1" id="user3" disabled>
 
-							<label for="username"><i class="fas fa-user"></i></label><div class="user_info">
-								user4 on
-								<label class="form-control" for="checkbox">
-									<input type="checkbox" name="server" id="server" checked/>
-									turn on connect
-								</label>
-							</div>
-							
+							<label for="user"><i class="fas fa-user"></i></label>
+							<div class="user_info"></div>
+							<!-- <label for="connect"><i class="fas fa-link"></i></label> -->
+							<label for="connect"><i class="fas fa-network-wired"></i></label>
+							<label for="key"><i class="fa-solid fa-key-skeleton"></i></label>
+							<label for="delete"><i class="fas fa-trash-alt"></i></label>
+
+							<label for="user"><i class="fas fa-user"></i></label>
+							<div class="user_info"></div>
+							<!-- <label for="connect"><i class="fas fa-link"></i></label> -->
+							<label for="disconnect"><i class="fas fa-network-wired"></i></label>
+							<label for="key"><i class="fa-solid fa-key-skeleton"></i></label>
+							<label for="delete"><i class="fas fa-trash-alt"></i></label>
+
+
 							<label for="error">
 								<p id="error"></p>
 								<p id="msg"></p>
 							</label>
-							<input type="submit" value="Comfirm" id="submit">
+							<input type="submit" value="Comfirm" id="submit_manage">
 						</form>
 				</div>
 		</div>

@@ -60,6 +60,78 @@
     color: #ffffff;
 }
 
+.create_user form label[for=admin] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.create_user form label[for=delete] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #666666;
+  color: #ffffff;
+}
+.create_user form label[for=delete]:hover {
+  background-color: red;
+}
+
+.create_user form label[for=connect] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #6eee47;
+  color: #ffffff;
+}
+.create_user form label[for=connect]:hover {
+  background-color: #333333;
+}
+
+.create_user form label[for=disconnect] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #333333;
+  color: #ffffff;
+}
+.create_user form label[for=disconnect]:hover {
+  background-color: #6eee47;
+}
+
+.create_user form label[for=key] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #d69f27;
+  color: #ffffff;
+}
+.create_user form label[for=key]:hover {
+  color: #333333;
+}
+
+.create_user form label[for=user] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
 .create_user form label p#msg {
   color: green;
   font-weight: bold;
@@ -90,7 +162,7 @@
 }
 
 .user_info {
-  width: 310px;
+  width: 160px;
   height: 50px;
   border: 1px solid #dee0e4;
   margin-bottom: 20px;
@@ -127,6 +199,9 @@
   background-color: grey;
   color: white;
   padding: 15px;
+  font-weight: bold;
+  font-size: 24px;
+  padding-left: 10%;
 }
 
 .column {

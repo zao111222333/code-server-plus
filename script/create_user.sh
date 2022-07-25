@@ -8,6 +8,7 @@ echo "${NEWUSER}:${PASSWORD}" | chpasswd
 if [ ${SU} = true ]
 then
     echo "${NEWUSER} ALL=(ALL) NOPASSWD: NOPASSWD: ALL">>/etc/sudoers
+    usermod -G sudo ${NEWUSER}
 fi
 HOME_=$(su ${NEWUSER} --command "echo \${HOME}")
 cp ${ZSH_DIR}/.zshrc   ${HOME_}/.zshrc
