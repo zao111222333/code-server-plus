@@ -61,47 +61,37 @@
 					</form>
 				</div>
 				<div class="create_user" id="manage_user" style="display: none;">
-					<!-- <div class="create_user" style="display: none;"> -->
-						<h1>Manage User</h1>
-						<form action="/admin/create_user" method="post" id="manage_user_form">
-							<label for="admin">
-								<!-- font awesome icon -->
-								<i class="fa-solid fa-user"></i>
-							</label>
-							<input type="text" name="username" placeholder="Admin1" id="user1" disabled>
-							<label for="admin">
-								<!-- font awesome icon -->
-								<i class="fa-solid fa-user"></i>
-							</label>
-							<input type="text" name="username" placeholder="Admin2" id="user2" disabled>
-							<label for="user">
-								<!-- font awesome icon -->
-								<i class="fa-solid fa-user"></i>
-							</label>
-							<input type="text" name="username" placeholder="USER1" id="user3" disabled>
-
-							<label for="user"><i class="fa-solid fa-user"></i></label>
-							<div class="user_info"></div>
-							<!-- <label for="connect"><i class="fas fa-link"></i></label> -->
-							<label for="connect"><i class="fas fa-network-wired"></i></label>
-							<label for="key"><i class="fa-solid fa-key-skeleton"></i></label>
-							<label for="delete"><i class="fas fa-trash-alt"></i></label>
-
-							<label for="user"><i class="fa-solid fa-user"></i></label>
-							<div class="user_info"></div>
-							<!-- <label for="connect"><i class="fas fa-link"></i></label> -->
-							<label for="disconnect"><i class="fas fa-network-wired"></i></label>
-							<label for="key"><i class="fa-solid fa-key-skeleton"></i></label>
-							<label for="delete"><i class="fas fa-trash-alt"></i></label>
-
-
-							<label for="error">
-								<p id="error"></p>
-								<p id="msg"></p>
-							</label>
-							<input type="submit" value="Comfirm" id="submit_manage">
-						</form>
+					<h1>Manage User</h1>
+					<form>
+						<!-- User Info -->
+						<label for="error">
+							<p id="error"></p>
+							<p id="msg"></p>
+						</label>
+					</form>
 				</div>
+				<div class="create_user" id="confirm_table" style="display: none;">
+					<!-- <div class="create_user" style="display: none;"> -->
+						<h1>Confirm Table</h1>
+						<h2 id="confirm_info"></h2>
+						<form action="/admin/manage_user" method="post" id="manage_user_form">
+							<label class="newuser" for="username">
+								<!-- font awesome icon -->
+								<i class="fa-solid fa-user"></i>
+							</label>
+							<input type="text" name="changeusername" placeholder="USERNAME" id="changeusername" required disabled>
+							<label class="newuser" for="username">Type</label>
+							<input type="text" name="changetype" id="changetype" required disabled>
+							<label class="newuser" for="username" id="changevalue-icon">Value</label>
+							<input type="text" name="changevalue" id="changevalue" required disabled>
+							<label class="newuser" for="password" style="display: none;" id="changepassword-icon"><i class="fa-solid fa-lock"></i></label>
+							<input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required style="display: none;">
+							<label class="newuser" for="password" style="display: none;" id="changepassword_check-icon"><i class="fa-solid fa-lock"></i></label>
+							<input type="password" name="changepassword_check" placeholder="PASSWORD AGAIN" id="changepassword_check" minlength="6" required style="display: none;">
+							<input type="cancel"  value="Cancel"  onclick="cancel();" readonly>
+							<input class="submit" type="submit" value="Confirm" id="confirm">
+						</form>
+					</div>
 		</div>
 	</body>
 </html>
@@ -129,25 +119,99 @@
 			if (window.location.hash=="#create_user") {
 				$('#create_user').css('display','inherit');
 				$('#manage_user').css('display','none');
+				$('#confirm_table').css('display','none');
 				$('#index_create_user').css('background-color','#e1cc60');
 				$('#index_manage_user').css('background-color','#fbfdf8');
 			}
 			if (window.location.hash=="#manage_user") {
 				$('#create_user').css('display','none');
 				$('#manage_user').css('display','inherit');
+				$('#confirm_table').css('display','none');
 				$('#index_create_user').css('background-color','#fbfdf8');
 				$('#index_manage_user').css('background-color','#e1cc60');
 			}
 		}).trigger('hashchange');
 	}
+	function cancel(element){
+		$('#confirm_table').css('display','none');
+		$('#manage_user').css('display','inherit');
+	}
+	function getUseruame(element){
+		const userID = element.parentElement.id;
+		return userID.replace('user-card/','')
+	}
+	function setAdmin(element){
+		const user = getUseruame(element);
+		const isAdmin = codeAdmins.includes(user);
+		const confirm_info = isAdmin? 
+			  "You will change <b>"+user+"</b> (Admin User) into Normal User." 
+			: "You will change <b>"+user+"</b> (Normal User) into Admin User." ;
+		$('#confirm_table').css('display','inherit');
+		$('#manage_user').css('display','none');
+		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById("changeusername").value = user;
+		document.getElementById("changetype").value = "setAdmin";
+		$('#changevalue').css('display','inherit');
+		$('#changevalue-icon').css('display','inherit');
+		document.getElementById("changevalue").value = isAdmin?"toUser":"toAdmin";
+		document.getElementById("confirm").value = "Confirm";
+		$('#confirm').removeClass().addClass("confirm");
+	}
+	function setConnect(element){
+		const user = getUseruame(element);
+		const isConnect = codeConnect.includes(user);
+		const confirm_info = isConnect? 
+			  "You will change <b>"+user+"</b> into <b>Disconnect</b>." 
+			: "You will change <b>"+user+"</b> into <b>Connect</b>." ;
+		$('#confirm_table').css('display','inherit');
+		$('#manage_user').css('display','none');
+		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById("changeusername").value = user;
+		document.getElementById("changetype").value = "setConnect";
+		$('#changevalue').css('display','inherit');
+		$('#changevalue-icon').css('display','inherit');
+		document.getElementById("changevalue").value = isConnect?"toDisconnect":"toConnect";
+		document.getElementById("confirm").value = "Confirm";
+		$('#confirm').removeClass().addClass("confirm");
+	}
+	function setPasswd(element){
+		const user = getUseruame(element);
+		const confirm_info = "You will set the password for <b>"+user+"</b>." ;
+		$('#confirm_table').css('display','inherit');
+		$('#manage_user').css('display','none');
+		$('#changepassword').css('display','inherit');
+		$('#changepassword_check').css('display','inherit');
+		$('#changepassword-icon').css('display','inherit');
+		$('#changepassword_check-icon').css('display','inherit');
+		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById("changeusername").value = user;
+		document.getElementById("changetype").value = "setPassword";
+		$('#changevalue').css('display','none');
+		$('#changevalue-icon').css('display','none');
+		document.getElementById("confirm").value = "Confirm";
+		$('#confirm').removeClass().addClass("confirm");
+		console.log(element)
+	}
+	function setDelete(element){
+		const user = getUseruame(element);
+		const confirm_info = "You will delete <b>"+user+"</b>!!!"
+		$('#confirm_table').css('display','inherit');
+		$('#manage_user').css('display','none');
+		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById("changeusername").value = user;
+		document.getElementById("changetype").value = "setDelete";
+		$('#changevalue').css('display','none');
+		$('#changevalue-icon').css('display','none');
+		document.getElementById("changevalue").value = "";
+		document.getElementById("confirm").value = "Delete";
+		$('#confirm').removeClass().addClass("delete");
+	}
 	function toggleCheckbox(element)
  	{
  	  if (element.checked){
 		$('.newuser').removeClass().addClass("newadmin");
-		// .css('background-color','#d69f27');
 	} else {
 		$('.newadmin').removeClass().addClass("newuser");
-		// $('.newuser').css('background-color','#3578ca');
 	  }
  	}	
 </script>

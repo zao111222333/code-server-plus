@@ -12,13 +12,16 @@ const fs = require("fs");
 const path = require('path');
 
 const args = process.argv.slice(2);
-const userAdmin = process.env.CODE_ADMIN;
+// const userAdmin = process.env.CODE_ADMIN;
 const userGroup = process.env.CODE_GROUP;
 const sessionName = "code-server-plus-session";
 const sessionSecret = crypto.randomBytes(20).toString('hex');
 
 function isNumeric(value) {
   return /^-?\d+$/.test(value);
+}
+function toStringList (list) {
+  return "['" + list.join("','") + "']"
 }
 function getSocketPath(userName) {
   return path.join(process.env.SOCK_DIR, 'code-server@'+userName+'.sock')
@@ -113,14 +116,8 @@ app.post('/login', function(req, res) {
 	let password = req.body.password;
 	if (username && password) {
     exec("members "+userGroup, (error, stdout, stderr) => {
-      if (error) {
-          console.log(`error: ${error.message}`);
-          return;
-      }
-      if (stderr) {
-          console.log(`stderr: ${stderr}`);
-          return;
-      }
+      if (error) {console.log(`error: ${error.message}`);return;}
+      if (stderr) {console.log(`stderr: ${stderr}`);return;}
       let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
       const members = text.split(" ");
       if (members.includes(username)) {
@@ -133,11 +130,17 @@ app.post('/login', function(req, res) {
             req.session.errMsg = '';
             req.session.userName = username;
             req.session.attempt=0;
-            if (username==userAdmin) {
-              res.redirect('/admin');
-            } else {
-              res.redirect('/');
-            }
+            exec("members sudo", (error, stdout, stderr) => {
+              if (error) {console.log(`error: ${error.message}`);return;}
+              if (stderr) {console.log(`stderr: ${stderr}`);return;}
+              let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+              allAdmins = text.split(" ");
+              if (allAdmins.includes(username)) {
+                res.redirect('/admin');
+              } else {
+                res.redirect('/');
+              }
+            });
           }
         });
       } else {
@@ -152,103 +155,120 @@ app.post('/login', function(req, res) {
 
 // admin
 app.get('/admin', function(req, res) {
-  if (req.session.userName==userAdmin) {
-    let allUsers = '';
+  function genUserCard (username, isAdmin, codeConnect){
+    if (!username==''){
+      const isConnect = codeConnect.includes(username);
+      const admin = isAdmin ? 'admin' : 'user';
+      const name = (username==req.session.userName) ? username+' (YOU)' : username;
+      const connect = isConnect ? 'connect' : 'disconnect';
+      var html = `
+<div class="user-card" id="user-card/${username}">
+<label class="user-lable icon-${admin}" onclick="setAdmin(this)"><i class="fa-solid fa-user"></i></label>
+<div class="user-info">${name}</div>
+<label class="user-lable icon-${connect}" onclick="setConnect(this)"><i class="fas fa-network-wired"></i></label>
+<label class="user-lable icon-key" onclick="setPasswd(this)"><i class="fa-solid fa-key-skeleton"></i></label>
+<label class="user-lable icon-delete" onclick="setDelete(this)"><i class="fas fa-trash-alt"></i></label>
+</div>
+`;
+      return html
+    } else {
+      return ''
+    }
+  }
+  if (req.session.login) {
     let allAdmins = '';
-    exec("members "+userGroup, (error, stdout, stderr) => {
+    exec("members sudo", (error, stdout, stderr) => {
       if (error) {console.log(`error: ${error.message}`);return;}
       if (stderr) {console.log(`stderr: ${stderr}`);return;}
       let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      allUsers = text.split(" ");
-      exec("members sudo", (error, stdout, stderr) => {
-        if (error) {console.log(`error: ${error.message}`);return;}
-        if (stderr) {console.log(`stderr: ${stderr}`);return;}
-        let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-        allAdmins = text.split(" ");
-        let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh');
-        exec(command, (error, stdout, stderr) => {
+      allAdmins = text.split(" ");
+      if (allAdmins.includes(req.session.userName)) {
+        // login to admin
+        let allUsers = '';
+        exec("members "+userGroup, (error, stdout, stderr) => {
           if (error) {console.log(`error: ${error.message}`);return;}
           if (stderr) {console.log(`stderr: ${stderr}`);return;}
           let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-          let codeConnect = text.split(" ");
-          let codeUsers = [];
-          let codeAdmins = [];
-          allUsers.forEach((user, i) => {
-            if (allAdmins.includes(user)) {
-              codeAdmins.push(user);
-            } else {
-              codeUsers.push(user);
-            }
-          });
-          // req.session.codeUsers = codeUsers;
-          // req.session.codeAdmins = codeAdmins;
-          // req.session.codeConnect = codeConnect;
-          function toStringList (list) {
-            return "['" + list.join("','") + "']"
-          }
-          fs.readFile(path.join(__dirname + '/static/admin.html'), 'utf8', function (err,data) {
-            if (err) {
-              return console.log(err);
-            }
-            if (req.session.msg) var data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
-            if (req.session.msgType) var data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
-            if (req.session.errMsg) var data = data.replace('errMsg = \'\'', 'errMsg = \''+req.session.errMsg+'\'');
-            if (req.session.errType) var data = data.replace('errType = \'\'', 'errType = \''+req.session.errType+'\'');
-            if (req.session.attempt) var data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
-            if (req.session.userName) var data = data.replace('username = \'\'', 'username = \''+req.session.userName+'\'');
-            if (req.session.newusername) var data = data.replace('newusername = \'\'', 'newusername = \''+req.session.newusername+'\'');
-            var data = data.replace('codeUsers = \[\]', 'codeUsers = '+toStringList(codeUsers));
-            var data = data.replace('codeAdmins = \[\]', 'codeAdmins = '+toStringList(codeAdmins));
-            var data = data.replace('codeConnect = \[\]', 'codeConnect = '+toStringList(codeConnect));
-            res.send(data);
+          allUsers = text.split(" ");
+          let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh');
+          exec(command, (error, stdout, stderr) => {
+            if (error) {console.log(`error: ${error.message}`);return;}
+            if (stderr) {console.log(`stderr: ${stderr}`);return;}
+            let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+            let codeConnect = text.split(" ");
+            let codeUsers = [];
+            let codeAdmins = [];
+            allUsers.forEach((user, i) => {
+              if (allAdmins.includes(user)) {
+                codeAdmins.push(user);
+              } else {
+                codeUsers.push(user);
+              }
+            });
+            fs.readFile(path.join(__dirname + '/static/admin.html'), 'utf8', function (err,data) {
+              if (err) {
+                return console.log(err);
+              }
+              if (req.session.msg) var data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
+              if (req.session.msgType) var data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
+              if (req.session.errMsg) var data = data.replace('errMsg = \'\'', 'errMsg = \''+req.session.errMsg+'\'');
+              if (req.session.errType) var data = data.replace('errType = \'\'', 'errType = \''+req.session.errType+'\'');
+              if (req.session.attempt) var data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
+              if (req.session.userName) var data = data.replace('username = \'\'', 'username = \''+req.session.userName+'\'');
+              if (req.session.newusername) var data = data.replace('newusername = \'\'', 'newusername = \''+req.session.newusername+'\'');
+              var data = data.replace('codeUsers = \[\]', 'codeUsers = '+toStringList(codeUsers));
+              var data = data.replace('codeAdmins = \[\]', 'codeAdmins = '+toStringList(codeAdmins));
+              var data = data.replace('codeConnect = \[\]', 'codeConnect = '+toStringList(codeConnect));
+              var userData = genUserCard(req.session.userName,true,codeConnect);
+              codeAdmins.forEach((user, i) => {
+                userData = (req.session.userName==user)?userData:userData+genUserCard(user,true,codeConnect);
+              });
+              codeUsers.forEach((user, i) => {
+                userData = userData+genUserCard(user,false,codeConnect);
+              });
+              var data = data.replace('<!-- User Info -->', userData);
+              res.send(data);
+            });
           });
         });
-      });
+      } else {
+        res.sendFile(path.join(__dirname + '/static/admin_no_right.html'));
+      }
     });
-    
-    
   } else {
     res.sendFile(path.join(__dirname + '/static/admin_no_right.html'));
   }
 });
 
 app.post('/admin/create_user', function(req, res) {
-  if (req.session.userName==userAdmin) {
-    let newusername = req.body.newusername;
-    let newpassword = req.body.newpassword;
-    let newpassword_check = req.body.newpassword_check;
-    let sudo = true;
-    if (req.body.sudo) {
-      sudo = true;
-    } else {
-      sudo = false;
-    }
-    let server = true;
-    if (req.body.server) {
-      server = true;
-    } else {
-      server = false;
-    }
-    if (!(newpassword_check==newpassword)) {
-      createErr("Passwords Do NOT Match",newusername,req,res);
-      return;
-    };
-    exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
-      if (error) {
-        console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        console.log(`error: ${stderr}`);
-        return;
-      }
-      const allUsers = stdout.split('\n');
-      if (allUsers.includes(newusername)) {
-        createErr("User Already Exist",newusername,req,res);
-      } else {
-        // const command = "/bin/bash /docker/code-server-plus/script/create_user.sh "+newusername+" "+newpassword+" "+sudo;
-        let command = "/bin/bash "+path.join(__dirname + '/script/create_user.sh')+" "+newusername+" "+newpassword+" "+sudo;
-        exec(command, (error, stdout, stderr) => {
+  if (req.session.login) {
+    exec("members sudo", (error, stdout, stderr) => {
+      if (error) {console.log(`error: ${error.message}`);return;}
+      if (stderr) {console.log(`stderr: ${stderr}`);return;}
+      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+      allAdmins = text.split(" ");
+      if (allAdmins.includes(req.session.userName)) {
+    
+        let newusername = req.body.newusername;
+        let newpassword = req.body.newpassword;
+        let newpassword_check = req.body.newpassword_check;
+        let sudo = true;
+        if (req.body.sudo) {
+          sudo = true;
+        } else {
+          sudo = false;
+        }
+        let server = true;
+        if (req.body.server) {
+          server = true;
+        } else {
+          server = false;
+        }
+        if (!(newpassword_check==newpassword)) {
+          createErr("Passwords Do NOT Match",newusername,req,res);
+          return;
+        };
+        exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
           if (error) {
             console.log(`error: ${error.message}`);
             return;
@@ -257,23 +277,42 @@ app.post('/admin/create_user', function(req, res) {
             console.log(`error: ${stderr}`);
             return;
           }
-          console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
-          if (server) {
-            let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername;
-            exec(command);
-            console.log("Start Server: username="+newusername);
+          const allUsers = stdout.split('\n');
+          if (allUsers.includes(newusername)) {
+            createErr("User Already Exist",newusername,req,res);
+          } else {
+            // const command = "/bin/bash /docker/code-server-plus/script/create_user.sh "+newusername+" "+newpassword+" "+sudo;
+            let command = "/bin/bash "+path.join(__dirname + '/script/create_user.sh')+" "+newusername+" "+newpassword+" "+sudo;
+            exec(command, (error, stdout, stderr) => {
+              if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+              }
+              if (stderr) {
+                console.log(`error: ${stderr}`);
+                return;
+              }
+              console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
+              if (server) {
+                let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername;
+                exec(command);
+                console.log("Start Server: username="+newusername);
+              }
+              req.session.newusername=newusername;
+              req.session.msg='Success';
+              req.session.msgType='create user';
+              req.session.errMsg='';
+              req.session.errType='';
+              res.redirect('/admin');
+            });
           }
-          req.session.newusername=newusername;
-          req.session.msg='Success';
-          req.session.msgType='create user';
-          req.session.errMsg='';
-          req.session.errType='';
-          res.redirect('/admin');
         });
+      } else {
+        res.redirect('/');
       }
     });
   } else {
-    res.redirect('/admin');
+    res.redirect('/');
   }
 });
 
@@ -299,7 +338,6 @@ app.get('/*', function(req, res) {
         return;
       }
       let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      console.log(stdout);
       if (text=="true") {
         proxy.web(req, res, {
           target: {

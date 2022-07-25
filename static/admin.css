@@ -11,6 +11,14 @@
   padding: 0 0 0 30px;
   /* border-bottom: 1px solid #dee0e4; */
 }
+h2 {
+  text-align: left;
+  color: #666666;;
+  font-size: 16px;
+  padding: 0 30px 0 30px;
+  font-weight: normal;
+  /* border-bottom: 1px solid #dee0e4; */
+}
 
 .create_user {
     width: 400px;
@@ -50,7 +58,7 @@
     justify-content: center;
     padding-top: 20px;
 }
-.create_user form label {
+/* .create_user form label {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -58,9 +66,23 @@
     height: 50px;
     background-color: #d69f27;
     color: #ffffff;
-}
+} */
 
-.create_user form label[for=admin] {
+/* .create_user form label[for=user] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #3578ca;
+  color: #ffffff;
+} */
+
+/* .create_user form label[for=user]:hover {
+  background-color: #d69f27;
+} */
+
+/* .create_user form label[for=admin] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,9 +90,13 @@
   height: 50px;
   background-color: #d69f27;
   color: #ffffff;
-}
+} */
 
-.create_user form label[for=delete] {
+/* .create_user form label[for=admin]:hover {
+  background-color: #3578ca;
+} */
+
+/* .create_user form label[for=delete] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -78,12 +104,12 @@
   height: 50px;
   background-color: #666666;
   color: #ffffff;
-}
-.create_user form label[for=delete]:hover {
+} */
+/* .create_user form label[for=delete]:hover {
   background-color: red;
-}
+} */
 
-.create_user form label[for=connect] {
+/* .create_user form label[for=connect] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,23 +119,23 @@
   color: #ffffff;
 }
 .create_user form label[for=connect]:hover {
-  background-color: #333333;
-}
+  background-color: #999999;
+} */
 
-.create_user form label[for=disconnect] {
+/* .create_user form label[for=disconnect] {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 50px;
   height: 50px;
-  background-color: #333333;
+  background-color: #999999;
   color: #ffffff;
 }
 .create_user form label[for=disconnect]:hover {
   background-color: #6eee47;
-}
+} */
 
-.create_user form label[for=key] {
+/* .create_user form label[for=key] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -120,9 +146,9 @@
 }
 .create_user form label[for=key]:hover {
   color: #333333;
-}
+} */
 
-.create_user form label[for=user] {
+/* .create_user form label[for=user] {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -130,7 +156,7 @@
   height: 50px;
   background-color: #3578ca;
   color: #ffffff;
-}
+} */
 .create_user form label.newuser {
   display: flex;
   justify-content: center;
@@ -179,13 +205,7 @@
     align-items: center;
 }
 
-.user_info {
-  width: 160px;
-  height: 50px;
-  border: 1px solid #dee0e4;
-  margin-bottom: 20px;
-  padding: 0 15px;
-}
+
 
 .create_user form input[type="password"], .create_user form input[type="text"] {
     width: 310px;
@@ -197,7 +217,6 @@
 .create_user form input[type="submit"] {
     width: 100%;
     padding: 15px;
-    margin-top: 5px;
     background-color: #3578ca;
     border: 0;
     cursor: pointer;
@@ -205,7 +224,10 @@
     color: #ffffff;
     transition: background-color 0.2s;
 }
-
+.create_user form input[type="submit"]:hover {
+  background-color: #2868c7;
+  transition: background-color 0.2s;
+}
 
 .create_user form input[type="submit"].newuser {
   width: 100%;
@@ -230,10 +252,6 @@
   transition: background-color 0.2s;
 }
 
-.create_user form input[type="submit"]:hover {
-  background-color: #9e751c;
-    transition: background-color 0.2s;
-}
 
 .create_user form input[type="submit"].newuser:hover {
   background-color: #2868c7;
@@ -296,4 +314,124 @@
 
 .menu li:hover {
   background-color: #efe9ba;
+}
+
+.user-card{
+  display: flex;
+  flex-direction: row;
+}
+
+.user-info {
+  width: 160px;
+  height: 50px;
+  border: 1px solid #dee0e4;
+  margin-bottom: 20px;
+  padding: 0 15px;
+  background-color: rgb(247, 249, 245);
+  color: #555555;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.user-lable{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+.user-lable:hover {
+  cursor: pointer;
+}
+.icon-user:hover{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+.icon-user{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-admin{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.icon-admin:hover{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-connect{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-connect:hover{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect:hover{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-key{
+  background-color: #b68315;
+  color: #ffffff;
+}
+
+.icon-key:hover{
+  background-color: #b68315;
+  color: #333333;
+}
+
+.icon-delete{
+  background-color: #666666;
+  color: #ffffff;
+}
+
+
+.icon-delete:hover{
+  background-color: red;
+  color: #ffffff;
+}
+
+.create_user form input[type="cancel"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #dee0e4;
+  border: 0;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  color: #666666;
+  transition: background-color 0.2s;
+}
+.create_user form input[type="cancel"]:hover {
+  background-color: #666666;
+  color: #dee0e4;
+  transition: background-color 0.2s;
+}
+
+.create_user form .delete[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: red;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+.create_user form .delete[type="submit"]:hover {
+background-color: #c10505;
+transition: background-color 0.2s;
 }
