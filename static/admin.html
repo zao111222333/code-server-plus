@@ -18,8 +18,8 @@
 		<div class="clearfix">
 			<div class="column menu">
 			  <ul>
-				<a href="#create_user"><li id="index_create_user">Create User</li></a>
-				<a href="#manage_user"><li id="index_manage_user">Manage User</li></a>
+				  <a href="#manage_user"><li id="index_manage_user">Manage User</li></a>
+				  <a href="#create_user"><li id="index_create_user">Create User</li></a>
 				<a href="/"><li style="background-color: #3578ca; color: white;">Start Code</li></a>
 				<a href="/logout"><li style="background-color: #444444; color: white;">Logout</li></a>
 			  </ul>
@@ -72,7 +72,7 @@
 				</div>
 				<div class="create_user" id="confirm_table" style="display: none;">
 					<!-- <div class="create_user" style="display: none;"> -->
-						<h1>Confirm Table</h1>
+						<h1 id="confirm_title">Confirm Table</h1>
 						<h2 id="confirm_info"></h2>
 						<form action="/admin/manage_user" method="post" id="manage_user_form">
 							<label class="newuser" for="username">
@@ -110,7 +110,7 @@
 	const codeConnect = [];
     window.onload = function(){
 		if (!window.location.hash) {
-			window.location.href = '#create_user'; 
+			window.location.href = '#manage_user'; 
 		}
 		document.getElementById("newusername").value = newusername;
 		if (errType=="create user") document.getElementById('error').innerHTML = errMsg;
@@ -130,6 +130,13 @@
 				$('#index_create_user').css('background-color','#fbfdf8');
 				$('#index_manage_user').css('background-color','#e1cc60');
 			}
+			if (window.location.hash=="#confirm_table") {
+				$('#create_user').css('display','none');
+				$('#manage_user').css('display','none');
+				$('#confirm_table').css('display','inherit');
+				$('#index_create_user').css('background-color','#fbfdf8');
+				$('#index_manage_user').css('background-color','#e1cc60');
+			}
 		}).trigger('hashchange');
 	}
 	function cancel(element){
@@ -137,6 +144,7 @@
 		$('#manage_user').css('display','inherit');
 	}
 	function getUseruame(element){
+		window.location.hash = '#confirm_table';
 		const userID = element.parentElement.id;
 		return userID.replace('user-card/','')
 	}
@@ -149,6 +157,7 @@
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById('confirm_title').innerHTML = isAdmin? "Unset Admin" : "Set Admin";
 		document.getElementById("changeusername").value = user;
 		document.getElementById("changetype").value = "setAdmin";
 		$('#changevalue').css('display','inherit');
@@ -166,6 +175,7 @@
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById('confirm_title').innerHTML = isConnect? "Disconnect User" : "Connect User";
 		document.getElementById("changeusername").value = user;
 		document.getElementById("changetype").value = "setConnect";
 		$('#changevalue').css('display','inherit');
@@ -184,6 +194,7 @@
 		$('#changepassword-icon').css('display','inherit');
 		$('#changepassword_check-icon').css('display','inherit');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById('confirm_title').innerHTML = "Set Password";
 		document.getElementById("changeusername").value = user;
 		document.getElementById("changetype").value = "setPassword";
 		$('#changevalue').css('display','none');
@@ -198,6 +209,7 @@
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
+		document.getElementById('confirm_title').innerHTML = "Delete User";
 		document.getElementById("changeusername").value = user;
 		document.getElementById("changetype").value = "setDelete";
 		$('#changevalue').css('display','none');

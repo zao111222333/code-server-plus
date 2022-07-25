@@ -186,9 +186,9 @@ h2 {
   width: 300px;
   height: 10px;
   background-color: #ffffff00;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   margin-top: 20px;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
 }
 

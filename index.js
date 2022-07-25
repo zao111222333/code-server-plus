@@ -216,6 +216,9 @@ app.get('/admin', function(req, res) {
               if (req.session.attempt) var data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
               if (req.session.userName) var data = data.replace('username = \'\'', 'username = \''+req.session.userName+'\'');
               if (req.session.newusername) var data = data.replace('newusername = \'\'', 'newusername = \''+req.session.newusername+'\'');
+              codeUsers.sort();
+              codeAdmins.sort();
+              codeConnect.sort();
               var data = data.replace('codeUsers = \[\]', 'codeUsers = '+toStringList(codeUsers));
               var data = data.replace('codeAdmins = \[\]', 'codeAdmins = '+toStringList(codeAdmins));
               var data = data.replace('codeConnect = \[\]', 'codeConnect = '+toStringList(codeConnect));
