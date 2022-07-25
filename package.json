@@ -8,12 +8,16 @@
     "cookie-parser": "^1.4.6",
     "express": "^4.18.0",
     "express-session": "^1.17.3",
-    "http-proxy": "^v1.18.1"
+    "http-proxy": "^v1.18.1",
+    "node-abi": "^3.22.0"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/zao111222333/code-server-plus.git"
   },
   "author": "junzhuo",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "pkg": "^5.8.0"
+  }
 }

@@ -128,6 +128,7 @@ app.post('/login', function(req, res) {
           }else {
             console.log("Login: username="+username);
             req.session.login = true;
+            req.session.isAdmin = false;
             req.session.errMsg = '';
             req.session.userName = username;
             req.session.attempt=0;
@@ -179,6 +180,7 @@ app.get('/admin', function(req, res) {
       allAdmins = text.split(" ");
       if (allAdmins.includes(req.session.userName)) {
         // login to admin
+        req.session.isAdmin = true;
         let allUsers = '';
         exec("members "+userGroup, (error, stdout, stderr) => {
           if (error) {console.log(`error: ${error.message}`);return;}
@@ -239,79 +241,68 @@ app.get('/admin', function(req, res) {
 });
 
 app.post('/admin/create_user', function(req, res) {
-  if (req.session.login) {
-    exec("members sudo", (error, stdout, stderr) => {
-      if (error) {console.log(`error: ${error.message}`);return;}
-      if (stderr) {console.log(`stderr: ${stderr}`);return;}
-      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      allAdmins = text.split(" ");
-      if (allAdmins.includes(req.session.userName)) {
-    
-        let newusername = req.body.newusername;
-        let newpassword = req.body.newpassword;
-        let newpassword_check = req.body.newpassword_check;
-        let sudo = true;
-        if (req.body.sudo) {
-          sudo = true;
-        } else {
-          sudo = false;
-        }
-        let server = true;
-        if (req.body.server) {
-          server = true;
-        } else {
-          server = false;
-        }
-        if (!(newpassword_check==newpassword)) {
-          createErr("Passwords Do NOT Match",newusername,req,res);
-          return;
-        };
-        exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
-          if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-          }
-          if (stderr) {
-            console.log(`error: ${stderr}`);
-            return;
-          }
-          const allUsers = stdout.split('\n');
-          if (allUsers.includes(newusername)) {
-            createErr("User Already Exist",newusername,req,res);
-          } else {
-            // const command = "/bin/bash /docker/code-server-plus/script/create_user.sh "+newusername+" "+newpassword+" "+sudo;
-            let command = "/bin/bash "+path.join(__dirname + '/script/create_user.sh')+" "+newusername+" "+newpassword+" "+sudo;
-            exec(command, (error, stdout, stderr) => {
-              if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-              }
-              if (stderr) {
-                console.log(`error: ${stderr}`);
-                return;
-              }
-              console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
-              if (server) {
-                let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername;
-                exec(command);
-                console.log("Start Server: username="+newusername);
-              }
-              req.session.newusername=newusername;
-              req.session.msg='Success';
-              req.session.msgType='create user';
-              req.session.errMsg='';
-              req.session.errType='';
-              res.redirect('/admin');
-            });
-          }
-        });
+  if (req.session.isAdmin) {
+      let newusername = req.body.newusername;
+      let newpassword = req.body.newpassword;
+      let newpassword_check = req.body.newpassword_check;
+      let sudo = true;
+      if (req.body.sudo) {
+        sudo = true;
       } else {
-        res.redirect('/');
+        sudo = false;
       }
-    });
-  } else {
-    res.redirect('/');
-  }
+      let server = true;
+      if (req.body.server) {
+        server = true;
+      } else {
+        server = false;
+      }
+      if (!(newpassword_check==newpassword)) {
+        createErr("Passwords Do NOT Match",newusername,req,res);
+        return;
+      };
+      exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`error: ${stderr}`);
+          return;
+        }
+        const allUsers = stdout.split('\n');
+        if (allUsers.includes(newusername)) {
+          createErr("User Already Exist",newusername,req,res);
+        } else {
+          // const command = "/bin/bash /docker/code-server-plus/script/create_user.sh "+newusername+" "+newpassword+" "+sudo;
+          let command = "/bin/bash "+path.join(__dirname + '/script/create_user.sh')+" "+newusername+" "+newpassword+" "+sudo;
+          exec(command, (error, stdout, stderr) => {
+            if (error) {
+              console.log(`error: ${error.message}`);
+              return;
+            }
+            if (stderr) {
+              console.log(`error: ${stderr}`);
+              return;
+            }
+            console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
+            if (server) {
+              let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername;
+              exec(command);
+              console.log("Start Server: username="+newusername);
+            }
+            req.session.newusername=newusername;
+            req.session.msg='Success';
+            req.session.msgType='create user';
+            req.session.errMsg='';
+            req.session.errType='';
+            res.redirect('/admin');
+          });
+        }
+      });
+    } else {
+      res.redirect('/');
+    }
 });
 
 app.get('/webdav', function(req, res) {
