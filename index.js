@@ -114,6 +114,7 @@ app.get('/login', function(req, res) {
 app.post('/login', function(req, res) {
 	let username = req.body.username;
 	let password = req.body.password;
+	let toAdmin = req.body.toAdmin;
 	if (username && password) {
     exec("members "+userGroup, (error, stdout, stderr) => {
       if (error) {console.log(`error: ${error.message}`);return;}
@@ -130,17 +131,11 @@ app.post('/login', function(req, res) {
             req.session.errMsg = '';
             req.session.userName = username;
             req.session.attempt=0;
-            exec("members sudo", (error, stdout, stderr) => {
-              if (error) {console.log(`error: ${error.message}`);return;}
-              if (stderr) {console.log(`stderr: ${stderr}`);return;}
-              let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-              allAdmins = text.split(" ");
-              if (allAdmins.includes(username)) {
-                res.redirect('/admin');
-              } else {
-                res.redirect('/');
-              }
-            });
+            if (toAdmin) {
+              res.redirect('/admin');
+            } else {
+              res.redirect('/');
+            }
           }
         });
       } else {

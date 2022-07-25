@@ -140,8 +140,9 @@
 		}).trigger('hashchange');
 	}
 	function cancel(element){
-		$('#confirm_table').css('display','none');
-		$('#manage_user').css('display','inherit');
+		// $('#confirm_table').css('display','none');
+		// $('#manage_user').css('display','inherit');
+		window.location.hash = '#manage_user';
 	}
 	function getUseruame(element){
 		window.location.hash = '#confirm_table';

@@ -70,3 +70,16 @@ body {
     color: var(--form-control-disabled);
     cursor: not-allowed;
   }
+
+form label[for=checkbox] {
+    display: flex;
+    width: 300px;
+    height: 10px;
+    background-color: #ffffff00;
+    margin-top: -5px;
+    color: #757575;
+    flex-wrap: nowrap;
+    /* flex-direction: column; */
+    justify-content: flex-start;
+    align-items: center;
+}

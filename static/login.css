@@ -111,3 +111,28 @@
   background-color: #2868c7;
     transition: background-color 0.2s;
 }
+
+form label[for=checkbox] {
+    display: flex;
+    width: 300px;
+    height: 10px;
+    background-color: #ffffff00;
+    margin-top: -5px;
+    color: #757575;
+    flex-wrap: nowrap;
+    /* flex-direction: column; */
+    justify-content: flex-start;
+    align-items: center;
+}
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em #2868c7;
+    /* Windows High Contrast Mode */
+    background-color: CanvasText;
+  }
