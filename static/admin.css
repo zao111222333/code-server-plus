@@ -131,6 +131,24 @@
   background-color: #3578ca;
   color: #ffffff;
 }
+.create_user form label.newuser {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #3578ca;
+  color: #ffffff;
+}
+.create_user form label.newadmin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #d69f27;
+  color: #ffffff;
+}
 
 .create_user form label p#msg {
   color: green;
@@ -180,7 +198,7 @@
     width: 100%;
     padding: 15px;
     margin-top: 5px;
-    background-color: #d69f27;
+    background-color: #3578ca;
     border: 0;
     cursor: pointer;
     font-weight: bold;
@@ -188,7 +206,41 @@
     transition: background-color 0.2s;
 }
 
+
+.create_user form input[type="submit"].newuser {
+  width: 100%;
+  padding: 15px;
+  margin-top: 5px;
+  background-color: #3578ca;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+.create_user form input[type="submit"].newadmin {
+  width: 100%;
+  padding: 15px;
+  margin-top: 5px;
+  background-color: #d69f27;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
 .create_user form input[type="submit"]:hover {
+  background-color: #9e751c;
+    transition: background-color 0.2s;
+}
+
+.create_user form input[type="submit"].newuser:hover {
+  background-color: #2868c7;
+    transition: background-color 0.2s;
+}
+
+.create_user form input[type="submit"].newadmin:hover {
   background-color: #9e751c;
     transition: background-color 0.2s;
 }

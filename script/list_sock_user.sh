@@ -1,9 +1,10 @@
 #! /bin/bash
-
+allUser=""
 for file in ${SOCK_DIR}/*.sock; do
     if  [ -S $file ] ; then
         tmp=${file#*@}
         user=${tmp%.*}
-        echo $user
+        allUser=${allUser}" "$user
     fi
 done
+echo $allUser

@@ -23,6 +23,16 @@ function isNumeric(value) {
 function getSocketPath(userName) {
   return path.join(process.env.SOCK_DIR, 'code-server@'+userName+'.sock')
 }
+function checkSocketFile(socketPath) {
+  let command = "/bin/bash "+path.join(__dirname + '/script/check_sock.sh')+" "+socketPath;
+  exec(command, (error, stdout, stderr) => {
+    let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+    if (text="true") {
+      return true;
+    }
+    return false;
+  });
+}
 function loginErr(errMsg,username,req,res) {
   req.session.login=false;
   req.session.errMsg=errMsg;
@@ -105,12 +115,10 @@ app.post('/login', function(req, res) {
     exec("members "+userGroup, (error, stdout, stderr) => {
       if (error) {
           console.log(`error: ${error.message}`);
-          loginErr('Invalid Username',username,req,res);
           return;
       }
       if (stderr) {
           console.log(`stderr: ${stderr}`);
-          loginErr('Invalid Username',username,req,res);
           return;
       }
       let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
@@ -145,20 +153,60 @@ app.post('/login', function(req, res) {
 // admin
 app.get('/admin', function(req, res) {
   if (req.session.userName==userAdmin) {
-    // res.send("管理界面");
-    fs.readFile(path.join(__dirname + '/static/admin.html'), 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
-      }
-      if (req.session.msg) var data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
-      if (req.session.msgType) var data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
-      if (req.session.errMsg) var data = data.replace('errMsg = \'\'', 'errMsg = \''+req.session.errMsg+'\'');
-      if (req.session.errType) var data = data.replace('errType = \'\'', 'errType = \''+req.session.errType+'\'');
-      if (req.session.attempt) var data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
-      if (req.session.userName) var data = data.replace('username = \'\'', 'username = \''+req.session.userName+'\'');
-      if (req.session.newusername) var data = data.replace('newusername = \'\'', 'newusername = \''+req.session.newusername+'\'');
-      res.send(data);
+    let allUsers = '';
+    let allAdmins = '';
+    exec("members "+userGroup, (error, stdout, stderr) => {
+      if (error) {console.log(`error: ${error.message}`);return;}
+      if (stderr) {console.log(`stderr: ${stderr}`);return;}
+      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+      allUsers = text.split(" ");
+      exec("members sudo", (error, stdout, stderr) => {
+        if (error) {console.log(`error: ${error.message}`);return;}
+        if (stderr) {console.log(`stderr: ${stderr}`);return;}
+        let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+        allAdmins = text.split(" ");
+        let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh');
+        exec(command, (error, stdout, stderr) => {
+          if (error) {console.log(`error: ${error.message}`);return;}
+          if (stderr) {console.log(`stderr: ${stderr}`);return;}
+          let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+          let codeConnect = text.split(" ");
+          let codeUsers = [];
+          let codeAdmins = [];
+          allUsers.forEach((user, i) => {
+            if (allAdmins.includes(user)) {
+              codeAdmins.push(user);
+            } else {
+              codeUsers.push(user);
+            }
+          });
+          // req.session.codeUsers = codeUsers;
+          // req.session.codeAdmins = codeAdmins;
+          // req.session.codeConnect = codeConnect;
+          function toStringList (list) {
+            return "['" + list.join("','") + "']"
+          }
+          fs.readFile(path.join(__dirname + '/static/admin.html'), 'utf8', function (err,data) {
+            if (err) {
+              return console.log(err);
+            }
+            if (req.session.msg) var data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
+            if (req.session.msgType) var data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
+            if (req.session.errMsg) var data = data.replace('errMsg = \'\'', 'errMsg = \''+req.session.errMsg+'\'');
+            if (req.session.errType) var data = data.replace('errType = \'\'', 'errType = \''+req.session.errType+'\'');
+            if (req.session.attempt) var data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
+            if (req.session.userName) var data = data.replace('username = \'\'', 'username = \''+req.session.userName+'\'');
+            if (req.session.newusername) var data = data.replace('newusername = \'\'', 'newusername = \''+req.session.newusername+'\'');
+            var data = data.replace('codeUsers = \[\]', 'codeUsers = '+toStringList(codeUsers));
+            var data = data.replace('codeAdmins = \[\]', 'codeAdmins = '+toStringList(codeAdmins));
+            var data = data.replace('codeConnect = \[\]', 'codeConnect = '+toStringList(codeConnect));
+            res.send(data);
+          });
+        });
+      });
     });
+    
+    
   } else {
     res.sendFile(path.join(__dirname + '/static/admin_no_right.html'));
   }
@@ -187,11 +235,11 @@ app.post('/admin/create_user', function(req, res) {
     };
     exec("awk -F\':\' \'{ print \$1}\' /etc/passwd", (error, stdout, stderr) => {
       if (error) {
-        createErr(error.message,newusername,req,res);
+        console.log(`error: ${error.message}`);
         return;
       }
       if (stderr) {
-        createErr(stderr,newusername,req,res);
+        console.log(`error: ${stderr}`);
         return;
       }
       const allUsers = stdout.split('\n');
@@ -203,12 +251,10 @@ app.post('/admin/create_user', function(req, res) {
         exec(command, (error, stdout, stderr) => {
           if (error) {
             console.log(`error: ${error.message}`);
-            createErr(error.message,newusername,req,res);
             return;
           }
           if (stderr) {
             console.log(`error: ${stderr}`);
-            createErr(stderr,newusername,req,res);
             return;
           }
           console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
@@ -242,16 +288,29 @@ app.get('/webdav', function(req, res) {
 app.get('/*', function(req, res) {
   if (req.session.login) {
     const socketPath = getSocketPath(req.session.userName);
-    if (fs.existsSync(socketPath)) {
-      proxy.web(req, res, {
-        target: {
-          socketPath: socketPath
-        }
-      });
-    } else {
-      console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-      res.send("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-    }
+    let command = "/bin/bash "+path.join(__dirname + '/script/check_sock.sh')+" "+socketPath;
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.log(`error: ${stderr}`);
+        return;
+      }
+      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+      console.log(stdout);
+      if (text=="true") {
+        proxy.web(req, res, {
+          target: {
+            socketPath: socketPath
+          }
+        });
+      } else {
+        console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+        loginErr('You are Disconnect', req.session.userName,req,res);
+      }
+    });
   } else {
     res.redirect('/login');
   }
@@ -273,7 +332,8 @@ server.on('upgrade', function (req, socket, head) {
         }});
       } else {
         console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-        res.send("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+        // res.send("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+        loginErr('You\'re Disconnect', userName,req,res);
       }
     }
   }
