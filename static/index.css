@@ -1,13 +1,38 @@
-.header {
+body {
     background-color: #141414;
+  }
+.header {
     height: 0px;
-    color: white;
     font-weight: bold;
-    margin-left: 5px;
     text-align: left;
+    margin-top: -1px;
     z-index: 999;
 }
 
+.header a{
+    text-decoration-color: #ffffff60;
+}
+.header a:hover{
+    text-decoration-color: #ffffff;
+}
+
+
+.header label{
+    background-color: #14141460;
+    color: #ffffff60;
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-bottom: 1px;
+    font-size: 10px;
+}
+.header label.head-link{
+    cursor: pointer;
+}
+
+.header label.head-link:hover{
+    background-color: #141414;
+    color: #ffffff;
+}
 .monaco-workbench.web {
     z-index: -1;
 }

@@ -80,27 +80,29 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
   modifyResponse(res, proxyRes.headers['content-encoding'], function (body) {
       var pathname = url.parse(req.url).pathname;
       if (pathname=='/' && body) {
-        console.log(req.url);
         let userName='';
+        let isAdmin=false;
         if (app.sessions){
           let cookieHeader = req.headers?.cookie;
           if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), sessionSecret)
           if (cookies) var requestSessionID=cookies[sessionName];
           if (requestSessionID) var session=app.sessions[requestSessionID];
-          if (session) userName=session['userName'];
+          if (session) {
+            userName=session['userName'];
+            isAdmin=session['isAdmin'];
+          };
         }
         const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/static/index.css">';
+        const htmldAdmin = isAdmin? '<a href="/admin"><label class="head-link">Admin</label></a>':'';
         const html = `
           <div class="header">
-          Code<br>
-          Hi,${userName}<br>
-          Admin<br>
-          Logout
+            <label>Hi, ${userName}</label>
+            ${htmldAdmin}
+            <a href="/logout"><label class="head-link">Logout</label></a>
           </div>
         `;
-        var body = body.replace('<body aria-label="">', '<body aria-label="" style="background-color: #141414;height: 95%;">'+html);
+        var body = body.replace('<body aria-label="">', '<body aria-label="">'+html);
         var body = body.replace('</head>', style+'</head>');
-        console.log(body);
       }
       return body;
   });
@@ -150,17 +152,27 @@ app.post('/login', function(req, res) {
           if (err) {
             loginErr('Incorrect Password',username,req,res);
           }else {
-            console.log("Login: username="+username);
-            req.session.login = true;
-            req.session.isAdmin = false;
-            req.session.errMsg = '';
-            req.session.userName = username;
-            req.session.attempt=0;
-            if (toAdmin) {
-              res.redirect('/admin');
-            } else {
-              res.redirect('/');
-            }
+            exec("members sudo", (error, stdout, stderr) => {
+              if (error) {console.log(`error: ${error.message}`);return;}
+              if (stderr) {console.log(`stderr: ${stderr}`);return;}
+              let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+              const allAdmins = text.split(" ");
+              if (allAdmins.includes(username)) {
+                req.session.isAdmin = isAdmin = true;
+              } else {
+                req.session.isAdmin = isAdmin = false;
+              }
+              console.log("Login: username="+username);
+              req.session.login = true;
+              req.session.errMsg = '';
+              req.session.userName = username;
+              req.session.attempt=0;
+              if (toAdmin) {
+                res.redirect('/admin');
+              } else {
+                res.redirect('/');
+              }
+            });            
           }
         });
       } else {
@@ -204,7 +216,7 @@ app.get('/admin', function(req, res) {
       allAdmins = text.split(" ");
       if (allAdmins.includes(req.session.userName)) {
         // login to admin
-        req.session.isAdmin = true;
+        // req.session.isAdmin = true;
         let allUsers = '';
         exec("members "+userGroup, (error, stdout, stderr) => {
           if (error) {console.log(`error: ${error.message}`);return;}
