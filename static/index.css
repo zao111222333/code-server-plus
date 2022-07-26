@@ -5,7 +5,7 @@ body {
     height: 0px;
     font-weight: bold;
     text-align: left;
-    margin-top: -1px;
+    margin-top: -2px;
     z-index: 999;
 }
 
@@ -22,7 +22,7 @@ body {
     color: #ffffff60;
     padding-left: 3px;
     padding-right: 3px;
-    padding-bottom: 1px;
+    padding-bottom: -1px;
     font-size: 10px;
 }
 .header label.head-link{
