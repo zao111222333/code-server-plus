@@ -43,13 +43,13 @@
 							<i class="fa-solid fa-lock"></i>
 						</label>
 						<input type="password" name="newpassword_check" placeholder="PASSWORD AGAIN" id="newpassword_check" minlength="6" required>
-						<label class="form-control" for="checkbox">
+						<label class="checkbox-user form-control" for="checkbox" id="checkbox-sudo">
 							<input type="checkbox" name="sudo" id="sudo" onchange="toggleCheckbox(this)"/>
 							
 							Administrator & SUDO Privileges
 						</label>
 						<label style="height: 20px; width:200px; background-color: #00000000;"></label>
-						<label class="form-control" for="checkbox">
+						<label class="checkbox-user form-control" for="checkbox" id="checkbox-server">
 							<input type="checkbox" name="server" id="server" checked/>
 							Connect After Created
 						</label>
@@ -157,6 +157,10 @@
 			: "You will change <b>"+user+"</b> (Normal User) into Admin User." ;
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
+		$('#changepassword').css('display','none');
+		$('#changepassword_check').css('display','none');
+		$('#changepassword-icon').css('display','none');
+		$('#changepassword_check-icon').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
 		document.getElementById('confirm_title').innerHTML = isAdmin? "Unset Admin" : "Set Admin";
 		document.getElementById("changeusername").value = user;
@@ -175,6 +179,10 @@
 			: "You will change <b>"+user+"</b> into <b>Connect</b>." ;
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
+		$('#changepassword').css('display','none');
+		$('#changepassword_check').css('display','none');
+		$('#changepassword-icon').css('display','none');
+		$('#changepassword_check-icon').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
 		document.getElementById('confirm_title').innerHTML = isConnect? "Disconnect User" : "Connect User";
 		document.getElementById("changeusername").value = user;
@@ -209,6 +217,10 @@
 		const confirm_info = "You will delete <b>"+user+"</b>!!!"
 		$('#confirm_table').css('display','inherit');
 		$('#manage_user').css('display','none');
+		$('#changepassword').css('display','none');
+		$('#changepassword_check').css('display','none');
+		$('#changepassword-icon').css('display','none');
+		$('#changepassword_check-icon').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
 		document.getElementById('confirm_title').innerHTML = "Delete User";
 		document.getElementById("changeusername").value = user;
@@ -219,12 +231,15 @@
 		document.getElementById("confirm").value = "Delete";
 		$('#confirm').removeClass().addClass("delete");
 	}
-	function toggleCheckbox(element)
- 	{
+	function toggleCheckbox(element) {
  	  if (element.checked){
 		$('.newuser').removeClass().addClass("newadmin");
-	} else {
+		$('#checkbox-server').removeClass("checkbox-user").addClass("checkbox-admin");
+		$('#checkbox-sudo').removeClass("checkbox-user").addClass("checkbox-admin");
+	  } else {
 		$('.newadmin').removeClass().addClass("newuser");
+		$('#checkbox-server').removeClass("checkbox-admin").addClass("checkbox-user");
+		$('#checkbox-sudo').removeClass("checkbox-admin").addClass("checkbox-user");
 	  }
  	}	
 </script>

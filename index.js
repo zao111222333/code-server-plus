@@ -366,6 +366,30 @@ server.on('upgrade', function (req, socket, head) {
   }
 });
 
+let allAdmins = '';
+let allUsers = '';
+exec("members sudo", (error, stdout, stderr) => {
+  if (error) {console.log(`error: ${error.message}`);return;}
+  if (stderr) {console.log(`stderr: ${stderr}`);return;}
+  let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+  allAdmins = text.split(" ");
+  exec("members "+userGroup, (error, stdout, stderr) => {
+    if (error) {console.log(`error: ${error.message}`);return;}
+    if (stderr) {console.log(`stderr: ${stderr}`);return;}
+    let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+    allUsers = text.split(" ");
+      allUsers.forEach((user, i) => {
+        if (allAdmins.includes(user)) {
+          let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+user;
+          exec(command);
+          console.log("Start Server: username="+user);
+        } else {
+          // codeUsers.push(user);
+        }
+      });
+  });
+});
+
 
 if (isNumeric(args[0])) {
   const port = args[0];

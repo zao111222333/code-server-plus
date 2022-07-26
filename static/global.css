@@ -59,6 +59,13 @@ body {
     /* Windows High Contrast Mode */
     background-color: CanvasText;
   }
+
+  .checkbox-user input[type="checkbox"]::before {
+    box-shadow: inset 1em 1em #2868c7;
+  }
+  .checkbox-admin input[type="checkbox"]::before {
+    box-shadow: inset 1em 1em #9e751c;
+  }
   
   input[type="checkbox"]:checked::before {
     transform: scale(1);
