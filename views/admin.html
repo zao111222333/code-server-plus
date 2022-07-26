@@ -79,11 +79,11 @@
 								<!-- font awesome icon -->
 								<i class="fa-solid fa-user"></i>
 							</label>
-							<input type="text" name="changeusername" placeholder="USERNAME" id="changeusername" required disabled>
+							<input type="text" name="changeusername" placeholder="USERNAME" id="changeusername" required readonly>
 							<label class="newuser" for="username">Type</label>
-							<input type="text" name="changetype" id="changetype" required disabled>
+							<input type="text" name="changetype" id="changetype" required readonly>
 							<label class="newuser" for="username" id="changevalue-icon">Value</label>
-							<input type="text" name="changevalue" id="changevalue" required disabled>
+							<input type="text" name="changevalue" id="changevalue" required readonly>
 							<label class="newuser" for="password" style="display: none;" id="changepassword-icon"><i class="fa-solid fa-lock"></i></label>
 							<input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required style="display: none;">
 							<label class="newuser" for="password" style="display: none;" id="changepassword_check-icon"><i class="fa-solid fa-lock"></i></label>
@@ -159,6 +159,8 @@
 		$('#manage_user').css('display','none');
 		$('#changepassword').css('display','none');
 		$('#changepassword_check').css('display','none');
+		$('#changepassword').removeAttr('required');
+		$('#changepassword_check').removeAttr('required');
 		$('#changepassword-icon').css('display','none');
 		$('#changepassword_check-icon').css('display','none');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
@@ -183,6 +185,8 @@
 		$('#changepassword_check').css('display','none');
 		$('#changepassword-icon').css('display','none');
 		$('#changepassword_check-icon').css('display','none');
+		$('#changepassword').removeAttr('required');
+		$('#changepassword_check').removeAttr('required');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
 		document.getElementById('confirm_title').innerHTML = isConnect? "Disconnect User" : "Connect User";
 		document.getElementById("changeusername").value = user;
@@ -207,6 +211,7 @@
 		document.getElementById("changeusername").value = user;
 		document.getElementById("changetype").value = "setPassword";
 		$('#changevalue').css('display','none');
+		$('#changevalue').removeAttr('required');
 		$('#changevalue-icon').css('display','none');
 		document.getElementById("confirm").value = "Confirm";
 		$('#confirm').removeClass().addClass("confirm");
@@ -221,6 +226,8 @@
 		$('#changepassword_check').css('display','none');
 		$('#changepassword-icon').css('display','none');
 		$('#changepassword_check-icon').css('display','none');
+		$('#changepassword').removeAttr('required');
+		$('#changepassword_check').removeAttr('required');
 		document.getElementById('confirm_info').innerHTML = confirm_info;
 		document.getElementById('confirm_title').innerHTML = "Delete User";
 		document.getElementById("changeusername").value = user;

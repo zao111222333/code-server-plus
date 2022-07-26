@@ -289,18 +289,8 @@ app.post('/admin/create_user', function(req, res) {
       let newusername = req.body.newusername;
       let newpassword = req.body.newpassword;
       let newpassword_check = req.body.newpassword_check;
-      let sudo = true;
-      if (req.body.sudo) {
-        sudo = true;
-      } else {
-        sudo = false;
-      }
-      let server = true;
-      if (req.body.server) {
-        server = true;
-      } else {
-        server = false;
-      }
+      let sudo = req.body.sudo? true:false;
+      let server = req.body.server ? true:false;
       if (!(newpassword_check==newpassword)) {
         createErr("Passwords Do NOT Match",newusername,req,res);
         return;
@@ -330,7 +320,7 @@ app.post('/admin/create_user', function(req, res) {
             }
             console.log("Create New User: username="+newusername+" isAdmin="+sudo);
             if (server) {
-              let command = "/bin/bash ./shells/start_server.sh' "+newusername+" "+SOCK_DIR;
+              let command = "/bin/bash ./shells/start_server.sh "+newusername+" "+SOCK_DIR;
               console.log(command);
               exec(command);
               console.log("Start Server: username="+newusername);
@@ -347,6 +337,53 @@ app.post('/admin/create_user', function(req, res) {
     } else {
       res.redirect('/');
     }
+});
+
+app.post('/admin/manage_user', function(req, res) {
+  if (req.session.isAdmin) {
+    let changeusername = req.body.changeusername;
+    let changetype = req.body.changetype;
+    let changevalue = req.body.changevalue;
+    let changepassword = req.body.changepassword;
+    let changepassword_check = req.body.changepassword_check;
+    let command = '';
+    console.log(changetype);
+    console.log(changevalue);
+    switch (changetype) {
+      case 'setAdmin':
+        if (changevalue=='toUser') {
+          command = 'toUser '+changeusername;
+        }
+        if (changevalue=='toAdmin') {
+          command = 'toAdmin '+changeusername;
+        }
+        break;
+      case 'setConnect':
+        if (changevalue=='toDisconnect') {
+          command = 'toDisconnect '+changeusername;
+        }
+        if (changevalue=='toConnect') {
+          command = 'toConnect '+changeusername;
+        }
+        break;
+      case 'setPassword':
+        if (!(changepassword==changepassword_check)) {
+          createErr("Passwords Do NOT Match",changeusername,req,res);
+          return;
+        };
+        command = 'setPassword '+changeusername+" "+changepassword_check;
+        break;
+      case 'setDelete':
+          command = 'setDelete '+changeusername;
+          break;
+      default:
+        console.log('None');
+      }
+      console.log(command);
+      res.redirect('/admin#confirm_table');
+  } else {
+    res.redirect('/');
+  }
 });
 
 app.get('/webdav', function(req, res) {
@@ -409,7 +446,7 @@ server.on('upgrade', function (req, socket, head) {
       } else {
         console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
         // res.send("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-        loginErr('You\'re Disconnect', userName,req,res);
+        // loginErr('You\'re Disconnect', userName,req,res);
       }
     }
   }

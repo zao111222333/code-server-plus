@@ -10,5 +10,5 @@ fi
 if  [ -S ${SOCK_FILE} ] ; then
     echo "err: socket file exist!"
 else
-    su ${USER} --command "code-server --auth none --socket ${SOCK_FILE} ${HOME}"&
+    su ${USER} --command "code-server --auth none --socket ${SOCK_FILE} \${HOME}"&
 fi
