@@ -80,7 +80,7 @@ app.use(session({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/code-server-plus/static',express.static(path.join(__dirname, '/static')));
+app.use('/code-server-plus/views',express.static('./views'));
 app.use(require('./middlewares/sessions.js'));
 
 var proxy = httpProxy.createProxyServer({ ws: true });
@@ -102,7 +102,7 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
             isAdmin=session['isAdmin'];
           };
         }
-        const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/static/index.css">';
+        const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/views/index.css">';
         const htmldAdmin = isAdmin? '<a href="/admin"><label class="head-link">Admin</label></a>':'';
         const html = `
           <div class="header">
@@ -122,9 +122,9 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
 // logout
 app.get("/logout", function (req, res) {
   if (req.session.login) {
-    res.sendFile(path.join(__dirname + '/static/logout.html'));
+    res.sendFile(path.join(__dirname + '/views/logout.html'));
   } else {
-    res.sendFile(path.join(__dirname + '/static/logout_not_login.html'));
+    res.sendFile(path.join(__dirname + '/views/logout_not_login.html'));
   }
 });
 app.post('/logout', function(req, res) {
@@ -135,7 +135,7 @@ app.post('/logout', function(req, res) {
 // login
 app.get('/login', function(req, res) {
   const limit = req.session.attempt >= 5;
-  fs.readFile(path.join(__dirname + '/static/login.html'), 'utf8', function (err,data) {
+  fs.readFile('./views/login.html', 'utf8', function (err,data) {
     if (err) {
       return console.log(err);
     }
@@ -225,15 +225,13 @@ app.get('/admin', function(req, res) {
       let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
       allAdmins = text.split(" ");
       if (allAdmins.includes(req.session.userName)) {
-        // login to admin
-        // req.session.isAdmin = true;
         let allUsers = '';
         exec("members "+userGroup, (error, stdout, stderr) => {
           if (error) {console.log(`error: ${error.message}`);return;}
           if (stderr) {console.log(`stderr: ${stderr}`);return;}
           let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
           allUsers = text.split(" ");
-          let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh')+" "+SOCK_DIR;
+          let command = "/bin/bash ./shells/list_sock_user.sh "+SOCK_DIR;
           exec(command, (error, stdout, stderr) => {
             if (error) {console.log(`error: ${error.message}`);return;}
             if (stderr) {console.log(`stderr: ${stderr}`);return;}
@@ -248,7 +246,7 @@ app.get('/admin', function(req, res) {
                 codeUsers.push(user);
               }
             });
-            fs.readFile(path.join(__dirname + '/static/admin.html'), 'utf8', function (err,data) {
+            fs.readFile('./views/admin.html', 'utf8', function (err,data) {
               if (err) {
                 return console.log(err);
               }
@@ -278,11 +276,11 @@ app.get('/admin', function(req, res) {
           });
         });
       } else {
-        res.sendFile(path.join(__dirname + '/static/admin_no_right.html'));
+        res.sendFile(path.join(__dirname + '/views/admin_no_right.html'));
       }
     });
   } else {
-    res.sendFile(path.join(__dirname + '/static/admin_no_right.html'));
+    res.sendFile(path.join(__dirname + '/views/admin_no_right.html'));
   }
 });
 
@@ -320,7 +318,7 @@ app.post('/admin/create_user', function(req, res) {
         if (allUsers.includes(newusername)) {
           createErr("User Already Exist",newusername,req,res);
         } else {
-          let command = "/bin/bash "+path.join(__dirname + '/script/newuser_create.sh')+" "+newusername+" "+newpassword+" "+sudo+" "+userGroup;
+          let command = "/bin/bash ./shells/newuser_create.sh "+newusername+" "+newpassword+" "+sudo+" "+userGroup;
           exec(command, (error, stdout, stderr) => {
             if (error) {
               console.log(`error: ${error.message}`);
@@ -330,9 +328,10 @@ app.post('/admin/create_user', function(req, res) {
               console.log(`error: ${stderr}`);
               return;
             }
-            console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
+            console.log("Create New User: username="+newusername+" isAdmin="+sudo);
             if (server) {
-              let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername+" "+SOCK_DIR;
+              let command = "/bin/bash ./shells/start_server.sh' "+newusername+" "+SOCK_DIR;
+              console.log(command);
               exec(command);
               console.log("Start Server: username="+newusername);
             }
@@ -361,7 +360,7 @@ app.get('/webdav', function(req, res) {
 app.get('/*', function(req, res) {
   if (req.session.login) {
     const socketPath = getSocketPath(req.session.userName);
-    let command = "/bin/bash "+path.join(__dirname + '/script/check_sock.sh')+" "+socketPath;
+    let command = "/bin/bash ./shells/check_sock.sh "+socketPath;
     exec(command, (error, stdout, stderr) => {
       if (error) {
         console.log(`error: ${error.message}`);
@@ -379,8 +378,13 @@ app.get('/*', function(req, res) {
           }
         });
       } else {
-        console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-        loginErr('You are Disconnect', req.session.userName,req,res);
+        if (req.session.isAdmin) {
+          console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+          res.redirect('/admin');
+        } else {
+          console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+          loginErr('You are Disconnect', req.session.userName,req,res);
+        }
       }
     });
   } else {
@@ -424,7 +428,8 @@ exec("members sudo", (error, stdout, stderr) => {
     let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
     allUsers = text.split(" ");
       allUsers.forEach((user, i) => {
-        let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+user+" "+SOCK_DIR;
+        let command = "/bin/bash ./shells/start_server.sh "+user+" "+SOCK_DIR;
+        console.log(command);
         if (allAdmins.includes(user)) {
           exec(command);
           console.log("Start Server: admin user="+user);
