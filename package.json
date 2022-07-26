@@ -9,6 +9,7 @@
     "express": "^4.18.0",
     "express-session": "^1.17.3",
     "http-proxy": "^v1.18.1",
+    "http-proxy-response-rewrite": "^0.0.1",
     "node-abi": "^3.22.0"
   },
   "repository": {

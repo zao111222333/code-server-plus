@@ -1,0 +1,13 @@
+.header {
+    background-color: #141414;
+    height: 0px;
+    color: white;
+    font-weight: bold;
+    margin-left: 5px;
+    text-align: left;
+    z-index: 999;
+}
+
+.monaco-workbench.web {
+    z-index: -1;
+}

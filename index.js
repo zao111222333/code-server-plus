@@ -1,5 +1,7 @@
 var http = require('http');
 var httpProxy = require('http-proxy');
+const modifyResponse = require('http-proxy-response-rewrite')
+var url = require('url') ;
 var express = require('express');
 var session = require("express-session");
 var cookie = require('cookie');
@@ -26,16 +28,7 @@ function toStringList (list) {
 function getSocketPath(userName) {
   return path.join(process.env.SOCK_DIR, 'code-server@'+userName+'.sock')
 }
-function checkSocketFile(socketPath) {
-  let command = "/bin/bash "+path.join(__dirname + '/script/check_sock.sh')+" "+socketPath;
-  exec(command, (error, stdout, stderr) => {
-    let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-    if (text="true") {
-      return true;
-    }
-    return false;
-  });
-}
+
 function loginErr(errMsg,username,req,res) {
   req.session.login=false;
   req.session.errMsg=errMsg;
@@ -82,6 +75,37 @@ app.use(require('./middlewares/sessions.js'));
 
 var proxy = httpProxy.createProxyServer({ ws: true });
 var server = http.createServer(app);
+// Listen for the `proxyRes` event on `proxy`.
+proxy.on('proxyRes', function (proxyRes, req, res) {
+  modifyResponse(res, proxyRes.headers['content-encoding'], function (body) {
+      var pathname = url.parse(req.url).pathname;
+      if (pathname=='/' && body) {
+        console.log(req.url);
+        let userName='';
+        if (app.sessions){
+          let cookieHeader = req.headers?.cookie;
+          if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), sessionSecret)
+          if (cookies) var requestSessionID=cookies[sessionName];
+          if (requestSessionID) var session=app.sessions[requestSessionID];
+          if (session) userName=session['userName'];
+        }
+        const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/static/index.css">';
+        const html = `
+          <div class="header">
+          Code<br>
+          Hi,${userName}<br>
+          Admin<br>
+          Logout
+          </div>
+        `;
+        var body = body.replace('<body aria-label="">', '<body aria-label="" style="background-color: #141414;height: 95%;">'+html);
+        var body = body.replace('</head>', style+'</head>');
+        console.log(body);
+      }
+      return body;
+  });
+});
+
 
 // logout
 app.get("/logout", function (req, res) {
