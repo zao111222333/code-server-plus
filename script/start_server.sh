@@ -1,5 +1,6 @@
 #! /bin/bash
 USER=$1
+SOCK_DIR=$2
 SOCK_FILE=${SOCK_DIR}/code-server@${USER}.sock
 if  [ -f ${SOCK_FILE} ] ; then
     rm ${SOCK_FILE}

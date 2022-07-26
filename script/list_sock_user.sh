@@ -1,4 +1,5 @@
 #! /bin/bash
+SOCK_DIR=$1
 allUser=""
 for file in ${SOCK_DIR}/*.sock; do
     if  [ -S $file ] ; then

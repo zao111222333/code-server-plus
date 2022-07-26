@@ -1,15 +1,6 @@
 #! /bin/bash
 NEWUSER=$1
-PASSWORD=$2
-SU=$3
-
-useradd -Nms /bin/zsh -g ${CODE_GROUP} ${NEWUSER}
-echo "${NEWUSER}:${PASSWORD}" | chpasswd
-if [ ${SU} = true ]
-then
-    echo "${NEWUSER} ALL=(ALL) NOPASSWD: NOPASSWD: ALL">>/etc/sudoers
-    usermod -G sudo ${NEWUSER}
-fi
+# useradd -Nms /bin/zsh -g ${CODE_GROUP} ${NEWUSER}
 HOME_=$(su ${NEWUSER} --command "echo \${HOME}")
 cp ${ZSH_DIR}/.zshrc   ${HOME_}/.zshrc
 cp ${ZSH_DIR}/p10k.zsh ${HOME_}/.p10k.zsh
@@ -18,5 +9,3 @@ cp /usr/share/code-server/User/settings.json    ${HOME_}/.local/share/code-serve
 cp /usr/share/code-server/User/keybindings.json ${HOME_}/.local/share/code-server/User/keybindings.json
 ln -s /usr/share/code-server/extensions ${HOME_}/.local/share/code-server/extensions
 chown -R ${NEWUSER} ${HOME_}
-
-echo 'done'

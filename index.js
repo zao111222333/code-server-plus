@@ -7,15 +7,20 @@ var session = require("express-session");
 var cookie = require('cookie');
 var cookieParser = require('cookie-parser');
 var crypto = require("crypto");
-// PAM need run as ROOT user!!!
 var pam = require('authenticate-pam');
 const { exec } = require("child_process");
 const fs = require("fs");
 const path = require('path');
 
 const args = process.argv.slice(2);
-// const userAdmin = process.env.CODE_ADMIN;
-const userGroup = process.env.CODE_GROUP;
+
+// TODO: Multi Group
+const userGroup = 'coder';
+const SOCK_DIR = '/var/run';
+// const connectNoRootUser = false;
+const connectNoRootUser = true;
+
+
 const sessionName = "code-server-plus-session";
 const sessionSecret = crypto.randomBytes(20).toString('hex');
 
@@ -26,7 +31,7 @@ function toStringList (list) {
   return "['" + list.join("','") + "']"
 }
 function getSocketPath(userName) {
-  return path.join(process.env.SOCK_DIR, 'code-server@'+userName+'.sock')
+  return path.join(SOCK_DIR, 'code-server@'+userName+'.sock')
 }
 
 function loginErr(errMsg,username,req,res) {
@@ -50,6 +55,11 @@ function createErr(errMsg,newusername,req,res) {
   req.session.newusername=newusername;
   req.session.errMsg=errMsg;
   res.redirect('/admin');
+}
+
+const isRoot = process.getuid && process.getuid() === 0;;
+if (!isRoot){
+  console.error('Error: Need bo be root')
 }
 
 // create a server
@@ -223,7 +233,7 @@ app.get('/admin', function(req, res) {
           if (stderr) {console.log(`stderr: ${stderr}`);return;}
           let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
           allUsers = text.split(" ");
-          let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh');
+          let command = "/bin/bash "+path.join(__dirname + '/script/list_sock_user.sh')+" "+SOCK_DIR;
           exec(command, (error, stdout, stderr) => {
             if (error) {console.log(`error: ${error.message}`);return;}
             if (stderr) {console.log(`stderr: ${stderr}`);return;}
@@ -310,8 +320,7 @@ app.post('/admin/create_user', function(req, res) {
         if (allUsers.includes(newusername)) {
           createErr("User Already Exist",newusername,req,res);
         } else {
-          // const command = "/bin/bash /docker/code-server-plus/script/create_user.sh "+newusername+" "+newpassword+" "+sudo;
-          let command = "/bin/bash "+path.join(__dirname + '/script/create_user.sh')+" "+newusername+" "+newpassword+" "+sudo;
+          let command = "/bin/bash "+path.join(__dirname + '/script/newuser_create.sh')+" "+newusername+" "+newpassword+" "+sudo+" "+userGroup;
           exec(command, (error, stdout, stderr) => {
             if (error) {
               console.log(`error: ${error.message}`);
@@ -323,7 +332,7 @@ app.post('/admin/create_user', function(req, res) {
             }
             console.log("Create New User: username="+newusername+" enable_SUDO="+sudo);
             if (server) {
-              let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername;
+              let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+newusername+" "+SOCK_DIR;
               exec(command);
               console.log("Start Server: username="+newusername);
             }
@@ -415,12 +424,15 @@ exec("members sudo", (error, stdout, stderr) => {
     let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
     allUsers = text.split(" ");
       allUsers.forEach((user, i) => {
+        let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+user+" "+SOCK_DIR;
         if (allAdmins.includes(user)) {
-          let command = "/bin/bash "+path.join(__dirname + '/script/start_server.sh')+" "+user;
           exec(command);
-          console.log("Start Server: username="+user);
+          console.log("Start Server: admin user="+user);
         } else {
-          // codeUsers.push(user);
+          if (connectNoRootUser) {
+            exec(command);
+            console.log("Start Server: user="+user);
+          }
         }
       });
   });
