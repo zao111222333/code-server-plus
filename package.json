@@ -1,0 +1,33 @@
+{
+    "name": "code-server-plus",
+    "license": "ISC",
+    "bin": "index.js",
+    "dependencies": {
+      "authenticate-pam": "^1.0.5",
+      "cookie-parser": "^1.4.6",
+      "express": "^4.18.0",
+      "express-session": "^1.17.3",
+      "http-proxy": "^v1.18.1",
+      "http-proxy-response-rewrite": "^0.0.1"
+    },
+    "devDependencies": {
+        "pkg": "^5.8.0"
+      },
+    "pkg": {
+        "scripts": [
+          "js/*"
+        ],
+        "assets": [
+          "views/*",
+          "shells/*"
+        ],
+        "targets": [ "node18-linux-x64" ],
+        "outputPath": "dist"
+      },
+    "scripts": {
+        "build": "pkg .",
+        "run": "node index.js 8000",
+        "run:build": "dist/code-server-plus 8000",
+        "env": "node env.js"
+      }
+  }

@@ -1,0 +1,209 @@
+* {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "segoe ui", roboto, oxygen, ubuntu, cantarell, "fira sans", "droid sans", "helvetica neue", Arial, sans-serif;
+  font-size: 16px;
+}
+body {
+  background-color: #202020;
+}
+
+.form-control {
+  font-family: system-ui, sans-serif;
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+.form-control + .form-control {
+  margin-top: 1em;
+}
+
+.form-control--disabled {
+  color: var(--form-control-disabled);
+  cursor: not-allowed;
+}
+
+input[type="checkbox"] {
+  /* Add if not using autoprefixer */
+  -webkit-appearance: none;
+  /* Remove most all native input styles */
+  appearance: none;
+  /* For iOS < 15 */
+  background-color: var(--form-background);
+  /* Not removed via appearance */
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transform-origin: bottom left;
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em #9e751c;
+  /* Windows High Contrast Mode */
+  background-color: CanvasText;
+}
+
+.checkbox-user input[type="checkbox"]::before {
+  box-shadow: inset 1em 1em #2868c7;
+}
+.checkbox-admin input[type="checkbox"]::before {
+  box-shadow: inset 1em 1em #9e751c;
+}
+
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+
+input[type="checkbox"]:disabled {
+  --form-control-color: var(--form-control-disabled);
+  color: var(--form-control-disabled);
+  cursor: not-allowed;
+}
+
+form label[for=checkbox] {
+  display: flex;
+  width: 300px;
+  height: 10px;
+  background-color: #ffffff00;
+  margin-top: -5px;
+  color: #757575;
+  flex-wrap: nowrap;
+  /* flex-direction: column; */
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.user-card{
+  display: flex;
+  flex-direction: row;
+}
+
+.user-info {
+  width: 160px;
+  height: 50px;
+  border: 1px solid #dee0e4;
+  margin-bottom: 20px;
+  padding: 0 15px;
+  background-color: rgb(247, 249, 245);
+  color: #555555;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.user-lable{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+.user-lable:hover {
+  cursor: pointer;
+}
+.icon-user:hover{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+.icon-user{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-admin{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.icon-admin:hover{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-connect{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-connect:hover{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect:hover{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-key{
+  background-color: #b68315;
+  color: #ffffff;
+}
+
+.icon-key:hover{
+  background-color: #b68315;
+  color: #333333;
+}
+
+.icon-delete{
+  background-color: #666666;
+  color: #ffffff;
+}
+
+.icon-delete:hover{
+  background-color: red;
+  color: #ffffff;
+}
+
+.card {
+  width: 400px;
+  background-color: #fbfdf8;
+  box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+  margin: 100px auto;
+}
+.card h1 {
+  text-align: left;
+  color: #444444;
+  font-size: 24px;
+  /* padding: 20px 0 20px 0; */
+  padding: 30px 0 20px 30px;
+  border-bottom: 1px solid #dee0e4;
+}
+
+.card #msg-error {
+  text-align: left;
+  color: red;
+  font-size: 16px;
+  padding: 0 0 0 0;
+  margin-top: -10px;
+  margin-bottom: 0px;
+}
+
+.card #msg-reminder {
+  text-align: left;
+  color: #cccc00;
+  font-size: 16px;
+  padding: 0 0 0 0;
+  margin-top: -20px;
+  margin-bottom: 0px;
+}

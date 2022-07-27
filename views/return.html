@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1">
+		<title>Return</title>
+        <!-- include the stylesheet file -->
+        <link href="/code-server-plus/views/style/global.css" rel="stylesheet" type="text/css">
+		<style>
+			.message {
+			  width: 400px;
+			  margin: 200px auto;
+			}
+			.message h1 {
+			  text-align: left;
+			  color: #fbfdf8;;
+			  font-size: 24px;
+			  padding: 0 0 0 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="message">
+            <h1 id="msg"></h1>
+            <h1 id="reminder"></h1>
+		</div>
+	</body>
+</html>
+
+<script type="text/javascript">
+    const msg = '';
+	let sec = 3;
+    
+    window.onload = function(){
+		countDown();
+	};
+	function countDown() {
+        const reminder = (sec < 10) ? "You will go back in 0"+ sec:"You will go back in "+ sec;
+        document.getElementById('reminder').innerHTML = reminder;
+		if (sec <= 0) {
+            window.location.href = '/'; 
+		    return;
+		}
+		sec -= 1;
+		window.setTimeout(countDown, 1000);
+	}
+</script>
