@@ -7,6 +7,50 @@ body {
   background-color: #202020;
 }
 
+form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 5px;
+}
+form input{
+  width: 310px;
+  height: 50px;
+  border: 1px solid #dee0e4;
+  margin-bottom: 20px;
+  padding: 0 15px;
+}
+
+form input[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  background-color: #3578ca;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+form input[type="submit"]:hover {
+  background-color: #2868c7;
+}
+
+form input[type="submitDisable"] {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  background-color: #3578ca80;
+  text-align: center;
+  border: 0;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+
 .form-control {
   font-family: system-ui, sans-serif;
   font-weight: bold;
@@ -14,6 +58,9 @@ body {
   display: grid;
   grid-template-columns: 1em auto;
   gap: 0.5em;
+}
+.form-control :hover{
+  cursor: pointer;
 }
 
 .form-control + .form-control {
@@ -29,6 +76,7 @@ input[type="checkbox"] {
   /* Add if not using autoprefixer */
   -webkit-appearance: none;
   /* Remove most all native input styles */
+  padding: 5px;
   appearance: none;
   /* For iOS < 15 */
   background-color: var(--form-background);
@@ -45,6 +93,8 @@ input[type="checkbox"] {
   place-content: center;
 }
 
+
+
 input[type="checkbox"]::before {
   content: "";
   width: 0.65em;
@@ -53,7 +103,7 @@ input[type="checkbox"]::before {
   transform: scale(0);
   transform-origin: bottom left;
   transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em #9e751c;
+  box-shadow: inset 1em 1em #2868c7;
   /* Windows High Contrast Mode */
   background-color: CanvasText;
 }
@@ -78,19 +128,20 @@ input[type="checkbox"]:disabled {
 form label[for=checkbox] {
   display: flex;
   width: 300px;
-  height: 10px;
+  height: 30px;
   background-color: #ffffff00;
-  margin-top: -5px;
+  margin-top: -15px;
   color: #757575;
   flex-wrap: nowrap;
-  /* flex-direction: column; */
   justify-content: flex-start;
   align-items: center;
+  justify-content: center;
 }
 
 .user-card{
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .user-info {
@@ -116,12 +167,14 @@ form label[for=checkbox] {
 .user-lable:hover {
   cursor: pointer;
 }
-.icon-user:hover{
-  background-color: #d69f27;
-  color: #ffffff;
-}
+
 .icon-user{
   background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-user:hover{
+  background-color: #d69f27;
   color: #ffffff;
 }
 
@@ -175,6 +228,24 @@ form label[for=checkbox] {
   color: #ffffff;
 }
 
+.icon-login-user{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-login-user:hover{
+  cursor: inherit;
+}
+
+.icon-login-admin{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.icon-login-admin:hover{
+  cursor: inherit;
+}
+
 .card {
   width: 400px;
   background-color: #fbfdf8;
@@ -190,20 +261,23 @@ form label[for=checkbox] {
   border-bottom: 1px solid #dee0e4;
 }
 
-.card #msg-error {
-  text-align: left;
-  color: red;
+.card .msg-label{
+  width: 310px;
+  margin: 0px;
+}
+.card .msg-label .msg {
+  text-align: center;
   font-size: 16px;
   padding: 0 0 0 0;
-  margin-top: -10px;
-  margin-bottom: 0px;
+  /* margin-top: -10px; */
+  margin: 0px;
 }
 
-.card #msg-reminder {
-  text-align: left;
-  color: #cccc00;
-  font-size: 16px;
-  padding: 0 0 0 0;
-  margin-top: -20px;
-  margin-bottom: 0px;
+.card .msg-label .error {
+  color: red;
 }
+
+.card .msg-label .reminder {
+  color: #cccc00;
+}
+
