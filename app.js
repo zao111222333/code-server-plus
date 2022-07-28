@@ -66,8 +66,8 @@ app.use(session({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/code-server-plus/views',express.static('./views'));
-app.use('/code-server-plus/js',express.static('./js'));
+app.use('/code-server-plus/views',express.static('./static/views'));
+app.use('/code-server-plus/js',express.static('./static/js'));
 app.use(sessions);
 
 
@@ -104,7 +104,7 @@ app.get('/login', function(req, res) {
   const username = (req.session.loginUsername && req.session.login) ? req.session.loginUsername : (
                    (req.session.handleUsername && !req.session.login)? req.session.handleUsername :'');
   const js = `<script src="/code-server-plus/js/login.js" limit="${limit}" msg="${msg}" msgType="${msgType}" attempt="${attempt}" username="${username}" type="text/javascript"></script>`;
-  fs.readFile('./views/login.html', 'utf8', function (err,data) {
+  fs.readFile('./static/views/login.html', 'utf8', function (err,data) {
     if (err) {console.log(err);return}
     data = data.replace('<!-- include the js file -->', js);
     res.send(data);
@@ -152,9 +152,9 @@ app.post('/login', function(req, res) {
 // logout
 app.get("/logout", function (req, res) {
   if (req.session.login) {
-    res.sendFile(path.join(__dirname + '/views/logout.html'));
+    res.sendFile(path.join(__dirname + '/static/views/logout.html'));
   } else {
-    fs.readFile('./views/return.html', 'utf8', function (err,data) {
+    fs.readFile('./static/views/return.html', 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You have NOT Login!\'');
       res.send(data);
@@ -192,7 +192,7 @@ app.get('/admin', function(req, res) {
           const hasSetAdmin = req.session.hasSetAdmin ? req.session.hasSetAdmin : '';
           const js = `<script src="/code-server-plus/js/admin.js" msg="${msg}" msgType="${msgType}" username="${username}" hasSetAdmin="${hasSetAdmin}" type="text/javascript"></script>`;
           const userInfoHtml = html.genUserCard(req.session.loginUsername,users,admins,connectUser);
-          fs.readFile('./views/admin.html', 'utf8', function (err,data) {
+          fs.readFile('./static/views/admin.html', 'utf8', function (err,data) {
             if (err) {console.log(err);return}
             data = data.replace('<!-- User Info -->', userInfoHtml);
             data = data.replace('<!-- include the js file -->', js);
@@ -202,7 +202,7 @@ app.get('/admin', function(req, res) {
       });
     });
   } else {
-    fs.readFile('./views/return.html', 'utf8', function (err,data) {
+    fs.readFile('./static/views/return.html', 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You are NOT Admin!\'');
       res.send(data);

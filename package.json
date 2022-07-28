@@ -15,10 +15,10 @@
   },
   "pkg": {
     "scripts": [
-      "js/*"
+      "static/js/*"
     ],
     "assets": [
-      "views/*"
+      "static/views/*"
     ],
     "targets": [ "node18-linux-x64" ],
     "outputPath": "dist"
