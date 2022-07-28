@@ -12,11 +12,20 @@ const fs = require("fs");
 const path = require('path');
 var command = require('./lib/command');
 var config = require('./lib/config');
-var sessions = require('./lib/sessions.js');
-var msgResponse = require('./lib/msgResponse');
+var sessions = require('./lib/sessions');
+var msg = require('./lib/msg');
 var html = require('./lib/html');
 
-
+// setup: 
+// check isRoot
+// parser config
+// check dependencies
+// connect default user
+const isRoot = process.getuid && process.getuid() === 0;;
+if (!isRoot){
+  console.error('Error: Need bo be root')
+  // process.exi
+}
 command.listAdminUser((err, adminUser) => {
   if (err) {console.log(err);return}
   command.listValidUser((err, validUser) => {
@@ -37,11 +46,7 @@ command.listAdminUser((err, adminUser) => {
 });
 
 
-const isRoot = process.getuid && process.getuid() === 0;;
-if (!isRoot){
-  console.error('Error: Need bo be root')
-  // process.exi
-}
+
 
 var proxy = httpProxy.createProxyServer({ ws: true });
 
@@ -116,11 +121,11 @@ app.post('/login', function(req, res) {
       if (err) {console.log(err);return}
       console.log('validUser: '+validUser);
       if (!validUser.includes(username)) {
-        msgResponse('Invalid Username','login-error','',username,req,res);
+        msg('Invalid Username','login-error','',username,req,res);
       } else {
         pam.authenticate(username, password, function(err) {
           if (err) {
-            msgResponse('Incorrect Password','login-error','',username,req,res);
+            msg('Incorrect Password','login-error','',username,req,res);
           }else {
             command.listAdminUser((err, adminUser) => {
               if (err) {console.log(err);return}
@@ -224,7 +229,7 @@ app.get('/*', function(req, res) {
           res.redirect('/admin');
         } else {
           console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(username));
-          msgResponse('You are Disconnect','login-error',username,'',req,res);
+          msg('You are Disconnect','login-error',username,'',req,res);
         }
       }
     });
