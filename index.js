@@ -67,6 +67,7 @@ app.use(session({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/code-server-plus/views',express.static('./views'));
+app.use('/code-server-plus/js',express.static('./js'));
 app.use(sessions);
 
 
@@ -97,17 +98,17 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
 
 app.get('/login', function(req, res) {
   const limit = req.session.attempt >= 5;
+  const msg = req.session.msg ? req.session.msg : '';
+  const msgType = req.session.msgType ? req.session.msgType : '';
+  const attempt = req.session.attempt ? req.session.attempt : '';
+  const username = (req.session.loginUsername && req.session.login) ? req.session.loginUsername : (
+                   (req.session.handleUsername && !req.session.login)? req.session.handleUsername :'');
+  const js = `
+<script src="/code-server-plus/js/login.js" limit="${limit}" msg="${msg}" msgType="${msgType}" attempt="${attempt}" username="${username}" type="text/javascript"></script>
+  `;
   fs.readFile('./views/login.html', 'utf8', function (err,data) {
     if (err) {console.log(err);return}
-    data = data.replace('limit = false', 'limit = '+limit);
-    if (req.session.msg) data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
-    if (req.session.msgType) data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
-    if (req.session.attempt) data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
-    if (req.session.loginUsername && req.session.login) {
-      data = data.replace('username = \'\'', 'username = \''+req.session.loginUsername+'\'');
-    } else if(req.session.handleUsername && !req.session.login){
-      data = data.replace('username = \'\'', 'username = \''+req.session.handleUsername+'\'');
-    }
+    data = data.replace('<!-- include the js file -->', js);
     res.send(data);
   });
 });
@@ -121,17 +122,17 @@ app.post('/login', function(req, res) {
       if (err) {console.log(err);return}
       console.log('validUser: '+validUser);
       if (!validUser.includes(username)) {
-        msg('Invalid Username','login-error','',username,req,res);
+        msg('Invalid Username','login-error',username,req,res);
       } else {
         pam.authenticate(username, password, function(err) {
           if (err) {
-            msg('Incorrect Password','login-error','',username,req,res);
+            msg('Incorrect Password','login-error',username,req,res);
           }else {
             command.listAdminUser((err, adminUser) => {
               if (err) {console.log(err);return}
-              req.session.isAdmin = adminUser.includes(username);
               console.log('adminUser: '+adminUser);
               console.log("Login: username="+username);
+              req.session.isAdmin = adminUser.includes(username);
               req.session.login = true;
               req.session.msg = 'login';
               req.session.msgType = 'login';
@@ -229,7 +230,7 @@ app.get('/*', function(req, res) {
           res.redirect('/admin');
         } else {
           console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(username));
-          msg('You are Disconnect','login-error',username,'',req,res);
+          msg('You are Disconnect','login-error',username,req,res);
         }
       }
     });
@@ -249,7 +250,7 @@ server.on('upgrade', function (req, socket, head) {
     if (requestSessionID) var session=app.sessions[requestSessionID];
     if (session) var loginUsername=session['loginUsername'];
     if (loginUsername) {
-      command.checkConnect(username,(err, isConnect) => {
+      command.checkConnect(loginUsername,(err, isConnect) => {
         if (err) {console.log(err);return}
         if (isConnect) {
           proxy.ws(req, socket, head,{target: {

@@ -1,0 +1,183 @@
+.message {
+  width: 400px;
+  /* background-color: #fbfdf8; */
+  /* box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3); */
+  margin: 200px auto;
+}
+.message h1 {
+  text-align: left;
+  color: #fbfdf8;;
+  font-size: 24px;
+  padding: 0 0 0 30px;
+  /* border-bottom: 1px solid #dee0e4; */
+}
+h2 {
+  text-align: left;
+  color: #666666;;
+  font-size: 16px;
+  padding: 0 30px 0 30px;
+  font-weight: normal;
+  /* border-bottom: 1px solid #dee0e4; */
+}
+
+.create_user {
+    width: 400px;
+    background-color: #fbfdf8;
+    box-shadow: 0 0 9px 0 rgba(0, 0, 0, 0.3);
+    margin: 50px auto;
+}
+.create_user h1 {
+    text-align: left;
+    color: #444444;
+    font-size: 24px;
+    padding: 30px 0 20px 30px;
+    border-bottom: 1px solid #dee0e4;
+}
+
+.create_user #error {
+    text-align: left;
+    color: red;
+    font-size: 16px;
+    padding: 0 0 0 0;
+    margin-top: -10px;
+    margin-bottom: 0px;
+}
+
+.create_user #attempt {
+    text-align: left;
+    color: #cccc00;
+    font-size: 16px;
+    padding: 0 0 0 0;
+    margin-top: -20px;
+    margin-bottom: 0px;
+}
+
+.create_user form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.create_user form label.newuser {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #3578ca;
+  color: #ffffff;
+}
+.create_user form label.newadmin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.create_user form label p#msg {
+  color: green;
+  font-weight: bold;
+}
+
+.create_user form label[for=error] {
+  display: flex;
+  width: 300px;
+  height: 10px;
+  background-color: #ffffff00;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+
+
+.create_user form input[type="password"], .create_user form input[type="text"] {
+    width: 310px;
+    height: 50px;
+    border: 1px solid #dee0e4;
+    margin-bottom: 20px;
+    padding: 0 15px;
+}
+.create_user form input[type="submit"] {
+    width: 100%;
+    padding: 15px;
+    background-color: #3578ca;
+    border: 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ffffff;
+    transition: background-color 0.2s;
+}
+.create_user form input[type="submit"]:hover {
+  background-color: #2868c7;
+  transition: background-color 0.2s;
+}
+
+.create_user form input[type="submit"].newuser {
+  width: 100%;
+  padding: 15px;
+  margin-top: 5px;
+  background-color: #3578ca;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+.create_user form input[type="submit"].newadmin {
+  width: 100%;
+  padding: 15px;
+  margin-top: 5px;
+  background-color: #d69f27;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+
+.create_user form input[type="submit"].newuser:hover {
+  background-color: #2868c7;
+    transition: background-color 0.2s;
+}
+
+.create_user form input[type="submit"].newadmin:hover {
+  background-color: #9e751c;
+    transition: background-color 0.2s;
+}
+
+
+
+.header, .footer {
+  background-color: grey;
+  color: white;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 24px;
+  padding-left: 10%;
+}
+
+.menu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  padding: 8px;
+  margin-bottom: 8px;
+  background-color: #fbfdf8;
+  color: #444444;
+  font-weight: bold;
+}
+
+.menu li:hover {
+  background-color: #efe9ba;
+}
