@@ -7,11 +7,9 @@ var express = require('express');
 var session = require("express-session");
 var cookie = require('cookie');
 var cookieParser = require('cookie-parser');
-var crypto = require("crypto");
 var pam = require('authenticate-pam');
 const fs = require("fs");
 const path = require('path');
-const { exec } = require("child_process");
 var command = require('./lib/command');
 var config = require('./lib/config');
 var sessions = require('./lib/sessions.js');
@@ -19,16 +17,25 @@ var msgResponse = require('./lib/msgResponse');
 var html = require('./lib/html');
 
 
-exec(command.setConnect('root'),{shell: "/bin/bash"});
-exec(command.setConnect('admin'),{shell: "/bin/bash"});
-exec("sleep 5 && cat /home/admin/error.txt && cat /home/admin/output.txt",{shell: "/bin/bash"},(error, stdout, stderr) => {
-  if (error) {console.log(`error: ${error.message}`);return;}
-  if (stderr) {console.log(`stderr: ${stderr}`);return;}
-  console.log(stdout);
+command.listAdminUser((err, adminUser) => {
+  if (err) {console.log(err);return}
+  command.listValidUser((err, validUser) => {
+    if (err) {console.log(err);return}
+    command.listConnectUser((err, connectUser) => {
+      if (err) {console.log(err);return}
+      validUser.forEach((user, i) => {
+        if (!connectUser.includes(user)) {
+          if (adminUser.includes(user)) {
+            if (config.bootConnectAdmin) command.setConnect(user);
+          } else {
+            if (config.bootConnectUser) command.setConnect(user);
+          }
+        }
+      });
+    });
+  });
 });
 
-const sessionName = "code-server-plus-session";
-const sessionSecret = crypto.randomBytes(20).toString('hex');
 
 const isRoot = process.getuid && process.getuid() === 0;;
 if (!isRoot){
@@ -40,10 +47,10 @@ var proxy = httpProxy.createProxyServer({ ws: true });
 
 var app = express();
 app.use(session({
-  secret: sessionSecret,
+  secret: config.sessionSecret,
   resave: false,
   saveUninitialized: false,
-  name: sessionName,
+  name: config.sessionName,
   rolling: true,
   cookie: {
     path: '/',
@@ -67,8 +74,8 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
         let isAdmin=false;
         if (app.sessions){
           let cookieHeader = req.headers?.cookie;
-          if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), sessionSecret)
-          if (cookies) var requestSessionID=cookies[sessionName];
+          if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), config.sessionSecret)
+          if (cookies) var requestSessionID=cookies[config.sessionName];
           if (requestSessionID) var session=app.sessions[requestSessionID];
           if (session) {
             username=session['loginUsername'];
@@ -87,7 +94,7 @@ app.get('/login', function(req, res) {
   const limit = req.session.attempt >= 5;
   fs.readFile('./views/login.html', 'utf8', function (err,data) {
     if (err) {console.log(err);return}
-    var data = data.replace('limit = false', 'limit = '+limit);
+    data = data.replace('limit = false', 'limit = '+limit);
     if (req.session.msg) data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
     if (req.session.msgType) data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
     if (req.session.attempt) data = data.replace('attempt = \'\'', 'attempt = \''+req.session.attempt+'\'');
@@ -202,23 +209,22 @@ app.get('/admin', function(req, res) {
 
 app.get('/*', function(req, res) {
   if (req.session.login) {
-    exec(command.checkConnect(req.session.loginUsername), (error, stdout, stderr) => {
-      if (error) {console.log(`error: ${error.message}`);return;}
-      if (stderr) {console.log(`error: ${stderr}`);return;}
-      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      if (text=="true") {
+    const username = req.session.loginUsername;
+    command.checkConnect(username,(err, isConnect) => {
+      if (err) {console.log(err);return}
+      if (isConnect) {
         proxy.web(req, res, {
           target: {
-            socketPath: config.getSockPath(req.session.loginUsername)
+            socketPath: config.getSockPath(username)
           }
         });
       } else {
         if (req.session.isAdmin) {
-          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(req.session.loginUsername));
+          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(username));
           res.redirect('/admin');
         } else {
-          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(req.session.loginUsername));
-          msgResponse('You are Disconnect','login-error',req.session.loginUsername,'',req,res);
+          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(username));
+          msgResponse('You are Disconnect','login-error',username,'',req,res);
         }
       }
     });
@@ -233,16 +239,14 @@ var server = http.createServer(app);
 server.on('upgrade', function (req, socket, head) {
   if (app.sessions){
     let cookieHeader = req.headers?.cookie;
-    if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), sessionSecret)
-    if (cookies) var requestSessionID=cookies[sessionName];
+    if (cookieHeader) var cookies=cookieParser.signedCookies(cookie.parse(cookieHeader), config.sessionSecret)
+    if (cookies) var requestSessionID=cookies[config.sessionName];
     if (requestSessionID) var session=app.sessions[requestSessionID];
     if (session) var loginUsername=session['loginUsername'];
     if (loginUsername) {
-      exec(command.checkConnect(loginUsername), (error, stdout, stderr) => {
-        if (error) {console.log(`error: ${error.message}`);return;}
-        if (stderr) {console.log(`error: ${stderr}`);return;}
-        let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-        if (text=="true") {
+      command.checkConnect(username,(err, isConnect) => {
+        if (err) {console.log(err);return}
+        if (isConnect) {
           proxy.ws(req, socket, head,{target: {
             socketPath: config.getSockPath(loginUsername)
           }});
