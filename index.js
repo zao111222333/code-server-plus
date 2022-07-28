@@ -249,7 +249,7 @@ server.on('upgrade', function (req, socket, head) {
     if (requestSessionID) var session=app.sessions[requestSessionID];
     if (session) var loginUsername=session['loginUsername'];
     if (loginUsername) {
-      command.checkConnect(username,(err, isConnect) => {
+      command.checkConnect(loginUsername,(err, isConnect) => {
         if (err) {console.log(err);return}
         if (isConnect) {
           proxy.ws(req, socket, head,{target: {
