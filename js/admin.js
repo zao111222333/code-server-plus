@@ -1,3 +1,24 @@
+var script = document.createElement('script');
+script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
+document.getElementsByTagName('head')[0].appendChild(script);
+
+const msg = document.currentScript.getAttribute('msg');;
+const msgType = document.currentScript.getAttribute('msgType');;
+const username = document.currentScript.getAttribute('username');;
+
+window.onload = function(){
+	$(window).on('hashchange', function(){
+		$('.card').css('display','none');
+		$(window.location.hash).css('display','inherit');
+	}).trigger('hashchange');
+	if (!window.location.hash) {
+		window.location.href = '#manage'; 
+	}
+	document.getElementById("username").value = username;
+	if (msgType=="create user") document.getElementById('msg').innerHTML = msg;
+}
+
+
 function getUserInfo(element){
 	const [username,admin,connect] = element.parentElement.id.split("/");
 	const isAdmin = admin=='admin';
@@ -9,96 +30,89 @@ function setAdmin(element){
 	const [username,isAdmin,isConnect] = getUserInfo(element);
 	const confirmInfo = isAdmin? "You will change <b>"+username+"</b> (Admin User) into Normal User." 
 		: "You will change <b>"+username+"</b> (Normal User) into Admin User." ;
-	$('#changepassword').css('display','none');
-	$('#changepassword-check').css('display','none');
-	$('#changepassword').removeAttr('required');
-	$('#changepassword-check').removeAttr('required');
-	$('#changepassword-icon').css('display','none');
-	$('#changepassword-check-icon').css('display','none');
-	document.getElementById("changeusername").value = username;
 	document.getElementById('confirm-info').innerHTML = confirmInfo;
 	document.getElementById('confirm-title').innerHTML = isAdmin? "Unset Admin" : "Set Admin";
 	document.getElementById("changeusername").value = username;
-	document.getElementById("changetype").value = "Set/Unset Admin";
-	$('#changevalue').css('display','inherit');
-	$('#changevalue-icon').css('display','inherit');
+	document.getElementById("changetype").value = "setAdmin";
 	document.getElementById("changevalue").value = isAdmin?"toUser":"toAdmin";
 	document.getElementById("confirm-submit").value = "Confirm";
-	// $('.confirm-submit').removeClass().addClass("confirm");
+	$('.user-card').css('display','inherit');
+	$('.changepassword-card').css('display','none');
+	$('.changepassword-check-card').css('display','none');
+	$('.changepassword-card').removeAttr('required');
+	$('.changepassword-check-card').removeAttr('required');
+	$('.confirm-submit').removeClass().addClass("confirm");
 }
-// function setConnect(element){
-// 	const user = getUseruame(element);
-// 	const isConnect = codeConnect.includes(user);
-// 	const confirm_info = isConnect? 
-// 		  "You will change <b>"+user+"</b> into <b>Disconnect</b>." 
-// 		: "You will change <b>"+user+"</b> into <b>Connect</b>." ;
-// 	$('#confirm_table').css('display','inherit');
-// 	$('#manage_user').css('display','none');
-// 	$('#changepassword').css('display','none');
-// 	$('#changepassword_check').css('display','none');
-// 	$('#changepassword-icon').css('display','none');
-// 	$('#changepassword_check-icon').css('display','none');
-// 	$('#changepassword').removeAttr('required');
-// 	$('#changepassword_check').removeAttr('required');
-// 	document.getElementById('confirm_info').innerHTML = confirm_info;
-// 	document.getElementById('confirm_title').innerHTML = isConnect? "Disconnect User" : "Connect User";
-// 	document.getElementById("changeusername").value = user;
-// 	document.getElementById("changetype").value = "setConnect";
-// 	$('#changevalue').css('display','inherit');
-// 	$('#changevalue-icon').css('display','inherit');
-// 	document.getElementById("changevalue").value = isConnect?"toDisconnect":"toConnect";
-// 	document.getElementById("confirm").value = "Confirm";
-// 	$('#confirm').removeClass().addClass("confirm");
-// }
-// function setPasswd(element){
-// 	const user = getUseruame(element);
-// 	const confirm_info = "You will set the password for <b>"+user+"</b>." ;
-// 	$('#confirm_table').css('display','inherit');
-// 	$('#manage_user').css('display','none');
-// 	$('#changepassword').css('display','inherit');
-// 	$('#changepassword_check').css('display','inherit');
-// 	$('#changepassword-icon').css('display','inherit');
-// 	$('#changepassword_check-icon').css('display','inherit');
-// 	document.getElementById('confirm_info').innerHTML = confirm_info;
-// 	document.getElementById('confirm_title').innerHTML = "Set Password";
-// 	document.getElementById("changeusername").value = user;
-// 	document.getElementById("changetype").value = "setPassword";
-// 	$('#changevalue').css('display','none');
-// 	$('#changevalue').removeAttr('required');
-// 	$('#changevalue-icon').css('display','none');
-// 	document.getElementById("confirm").value = "Confirm";
-// 	$('#confirm').removeClass().addClass("confirm");
-// 	console.log(element)
-// }
-// function setDelete(element){
-// 	const user = getUseruame(element);
-// 	const confirm_info = "You will delete <b>"+user+"</b>!!!"
-// 	$('#confirm_table').css('display','inherit');
-// 	$('#manage_user').css('display','none');
-// 	$('#changepassword').css('display','none');
-// 	$('#changepassword_check').css('display','none');
-// 	$('#changepassword-icon').css('display','none');
-// 	$('#changepassword_check-icon').css('display','none');
-// 	$('#changepassword').removeAttr('required');
-// 	$('#changepassword_check').removeAttr('required');
-// 	document.getElementById('confirm_info').innerHTML = confirm_info;
-// 	document.getElementById('confirm_title').innerHTML = "Delete User";
-// 	document.getElementById("changeusername").value = user;
-// 	document.getElementById("changetype").value = "setDelete";
-// 	$('#changevalue').css('display','none');
-// 	$('#changevalue-icon').css('display','none');
-// 	document.getElementById("changevalue").value = "";
-// 	document.getElementById("confirm").value = "Delete";
-// 	$('#confirm').removeClass().addClass("delete");
-// }
-// function toggleCheckbox(element) {
-//    if (element.checked){
-// 	$('.newuser').removeClass().addClass("newadmin");
-// 	$('#checkbox-server').removeClass("checkbox-user").addClass("checkbox-admin");
-// 	$('#checkbox-sudo').removeClass("checkbox-user").addClass("checkbox-admin");
-//   } else {
-// 	$('.newadmin').removeClass().addClass("newuser");
-// 	$('#checkbox-server').removeClass("checkbox-admin").addClass("checkbox-user");
-// 	$('#checkbox-sudo').removeClass("checkbox-admin").addClass("checkbox-user");
-//   }
-//  }	
+function setConnect(element){
+	window.location.hash = '#confirm';
+	const [username,isAdmin,isConnect] = getUserInfo(element);
+	const confirmInfo = isConnect? 
+		  "You will change <b>"+username+"</b> into <b>Disconnect</b>." 
+		: "You will change <b>"+username+"</b> into <b>Connect</b>." ;
+	document.getElementById('confirm-info').innerHTML = confirmInfo;
+	document.getElementById('confirm-title').innerHTML = isConnect? "Disconnect User" : "Connect User";
+	document.getElementById("changeusername").value = username;
+	document.getElementById("changetype").value = "setConnect";
+	document.getElementById("changevalue").value = isConnect?"toDisconnect":"toConnect";
+	document.getElementById("confirm-submit").value = "Confirm";
+	$('.user-card').css('display','inherit');
+	$('.changepassword-card').css('display','none');
+	$('.changepassword-check-card').css('display','none');
+	$('.changepassword-card').removeAttr('required');
+	$('.changepassword-check-card').removeAttr('required');
+	$('.confirm-submit').removeClass().addClass("confirm");
+}
+
+function setPasswd(element){
+	window.location.hash = '#confirm';
+	const [username,isAdmin,isConnect] = getUserInfo(element);
+	const confirmInfo = "You will set the password for <b>"+username+"</b>." ;
+	document.getElementById('confirm-info').innerHTML = confirmInfo;
+	document.getElementById('confirm-title').innerHTML = "Set Password";
+	document.getElementById("changeusername").value = username;
+	document.getElementById("changetype").value = "setPassword";
+	document.getElementById("confirm-submit").value = "Confirm";
+	document.getElementById("changevalue").value = "";
+	$('.user-card').css('display','inherit');
+	$('.changevalue-card').css('display','none');
+	$('#changepassword').removeAttr('disabled');
+	$('#changepassword').prop('required', true);
+	$('#changepassword-check').prop('required', true);
+	$('#confirm-submit').removeClass().addClass("confirm");
+}
+function setDelete(element){
+	window.location.hash = '#confirm';
+	const [username,isAdmin,isConnect] = getUserInfo(element);
+	const confirmInfo = "You will delete <b>"+username+"</b>!!!"
+	document.getElementById('confirm-info').innerHTML = confirmInfo;
+	document.getElementById('confirm-title').innerHTML = "Delete User";
+	document.getElementById("changeusername").value = username;
+	document.getElementById("changetype").value = "setDelete";
+	document.getElementById("changevalue").value = "";
+	$('.user-card').css('display','inherit');
+	$('.changevalue-card').css('display','none');
+	$('.changepassword-card').css('display','none');
+	$('.changepassword-check-card').css('display','none');
+	$('.changepassword-card').removeAttr('required');
+	$('.changepassword-check-card').removeAttr('required');
+	document.getElementById("confirm-submit").value = "Delete";
+	$('#confirm-submit').removeClass().addClass("delete");
+}
+function toggleAdminUser(element) {
+  if (element.checked){
+		$('.icon-login-user').removeClass('icon-login-user').addClass("icon-login-admin");
+		$('.create-user').removeClass("create-user").addClass("create-admin");
+		$('.checkbox-user').removeClass("checkbox-user").addClass("checkbox-admin");
+  } else {
+		$('.icon-login-admin').removeClass('icon-login-admin').addClass("icon-login-user");
+		$('.create-admin').removeClass("create-admin").addClass("create-user");
+		$('.checkbox-admin').removeClass("checkbox-admin").addClass("checkbox-user");
+  }
+}
+
+function toggleSetAdmin(){
+	$('input[name=setAdmin]').trigger('click'); 
+}
+function toggleSetConnect(){
+	$('input[name=setConnect]').trigger('click'); 
+}

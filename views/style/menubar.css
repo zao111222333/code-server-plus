@@ -24,11 +24,11 @@ body {
     padding-bottom: -1px;
     font-size: 10px;
 }
-.header label.head-link{
+.header label.header-link{
     cursor: pointer;
 }
 
-.header label.head-link:hover{
+.header label.header-link:hover{
     background-color: #141414;
     color: #ffffff;
 }

@@ -1,0 +1,192 @@
+.header h1 {
+  /* text-align: center; */
+  color: #fbfdf8;;
+  font-size: 24px;
+}
+
+.header {
+  background-color: grey;
+  padding: 15px;
+  font-weight: bold;
+  font-size: 24px;
+  padding-left: 10%;
+  padding-right: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header a {
+  color: #fbfdf8;
+}
+
+
+h2 {
+  text-align: left;
+  color: #666666;;
+  font-size: 16px;
+  padding: 0 30px 0 30px;
+  font-weight: normal;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+}
+
+.checkbox-group label[for=checkbox] {
+  justify-content: left;
+}
+
+.icon-user{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-user:hover{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.icon-admin{
+  background-color: #d69f27;
+  color: #ffffff;
+}
+
+.icon-admin:hover{
+  background-color: #3578ca;
+  color: #ffffff;
+}
+
+.icon-connect{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-connect:hover{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect{
+  background-color: #999999;
+  color: #ffffff;
+}
+
+.icon-disconnect:hover{
+  background-color: #6eee47;
+  color: #ffffff;
+}
+
+.icon-key{
+  background-color: #b68315;
+  color: #ffffff;
+}
+
+.icon-key:hover{
+  background-color: #b68315;
+  color: #333333;
+}
+
+.icon-delete{
+  background-color: #666666;
+  color: #ffffff;
+}
+
+.icon-delete:hover{
+  background-color: red;
+  color: #ffffff;
+}
+
+form input[type="cancel"] {
+  width: 100%;
+  padding: 15px;
+  background-color: #dee0e4;
+  border: 0;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  color: #666666;
+  transition: background-color 0.2s;
+  margin-bottom: 0;
+}
+form input[type="cancel"]:hover {
+  background-color: #666666;
+  color: #dee0e4;
+  transition: background-color 0.2s;
+}
+form input[type="cancel"] + input[type="submit"] {
+  margin-top: 0px;
+}
+
+form input.toCreate {
+  color: #ffffff;
+  background-color: #3578ca;
+}
+form input.toCreate:hover {
+  color: #ffffff;
+  background-color: #2868c7;
+}
+
+form .delete[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  background-color: red;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+form .delete[type="submit"]:hover {
+  background-color: #c10505;
+  transition: background-color 0.2s;
+}
+
+form input[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 0px;
+  background-color: #3578ca;
+  border: 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+form input.create-user[type="submit"] {
+  background-color: #3578ca;
+}
+form input.create-user[type="submit"]:hover {
+  background-color: #2868c7;
+}
+form input.create-admin[type="submit"] {
+  background-color: #d69f27;
+}
+form input.create-admin[type="submit"]:hover {
+  background-color: #9e751c;
+}
+
+form button[type="create"] {
+  width: 100%;
+  padding: 15px;
+  color: #ffffff;
+  border: 0;
+  cursor: pointer;
+  text-align: center;
+  font-weight: bold;
+  background-color: #3578ca;
+  transition: background-color 0.2s;
+  margin-bottom: 0;
+}
+form button[type="create"]:hover {
+  background-color: #2868c7;
+  color: #ffffff;
+  transition: background-color 0.2s;
+}
+

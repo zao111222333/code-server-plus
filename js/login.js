@@ -38,5 +38,5 @@ function enableSubmit() {
     document.getElementById("submit").value = "Login";
 }
 function toggleToAdmin(){
-    $('input[type=checkbox]').trigger('click'); 
+    $('input[name=toAdmin]').trigger('click'); 
 }

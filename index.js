@@ -103,9 +103,7 @@ app.get('/login', function(req, res) {
   const attempt = req.session.attempt ? req.session.attempt : '';
   const username = (req.session.loginUsername && req.session.login) ? req.session.loginUsername : (
                    (req.session.handleUsername && !req.session.login)? req.session.handleUsername :'');
-  const js = `
-<script src="/code-server-plus/js/login.js" limit="${limit}" msg="${msg}" msgType="${msgType}" attempt="${attempt}" username="${username}" type="text/javascript"></script>
-  `;
+  const js = `<script src="/code-server-plus/js/login.js" limit="${limit}" msg="${msg}" msgType="${msgType}" attempt="${attempt}" username="${username}" type="text/javascript"></script>`;
   fs.readFile('./views/login.html', 'utf8', function (err,data) {
     if (err) {console.log(err);return}
     data = data.replace('<!-- include the js file -->', js);
@@ -191,13 +189,15 @@ app.get('/admin', function(req, res) {
           });
           users.sort();
           admins.sort();
+          const msg = req.session.msg ? req.session.msg : '';
+          const msgType = req.session.msgType ? req.session.msgType : '';
+          const username = req.session.handleUsername ? req.session.handleUsername : '';
+          const js = `<script src="/code-server-plus/js/admin.js" msg="${msg}" msgType="${msgType}" username="${username}" type="text/javascript"></script>`;
+          const userInfoHtml = html.genUserCard(req.session.loginUsername,users,admins,connectUser);
           fs.readFile('./views/admin.html', 'utf8', function (err,data) {
             if (err) {console.log(err);return}
-            if (req.session.msg) data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
-            if (req.session.msgType) data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
-            if (req.session.loginUsername) data = data.replace('loginUsername = \'\'', 'loginUsername = \''+req.session.loginUsername+'\'');
-            if (req.session.handleUsername) data = data.replace('handleUsername = \'\'', 'handleUsername = \''+req.session.handleUsername+'\'');
-            data = data.replace('<!-- User Info -->', html.genUserCard(req.session.loginUsername,users,admins,connectUser));
+            data = data.replace('<!-- User Info -->', userInfoHtml);
+            data = data.replace('<!-- include the js file -->', js);
             res.send(data);
           });
         });

@@ -5,17 +5,18 @@
 		<meta name="viewport" content="width=device-width,minimum-scale=1">
 		<title>Admin</title>
 		<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.1.1/css/all.css">
-    <link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/global.css">
-    <link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/admin.css">
+    	<link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/global.css">
+    	<link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/admin.css">
+		<!-- include the js file -->
 	</head>
 	<body>
 		<div class="header">
-			Admin Panel
-			<a href="#manage"><li>Manage User</li></a>
-				  <a href="#create"><li>Create User</li></a>
-				  <a href="#confirm"><li>Confirm Table</li></a>
-				  <a href="/"><li style="background-color: #3578ca; color: white;">Start Code</li></a>
-				<a href="/logout"><li style="background-color: #444444; color: white;">Logout</li></a>
+			<h1>Admin Panel</h1>
+			<div>
+				<a href="/">Start Code</a>
+				<a>|</a>
+				<a href="/logout">Logout</a>
+			</div>
 		</div>
 
 		<div class="card" id="manage" style="display: none;">
@@ -25,84 +26,74 @@
 				<label for="msg">
 					<p id="msg"></p>
 				</label>
-				<input type="cancel"  value="Creare New User"  onclick="window.location.hash = '#create'" readonly>
+				<button class="toCreate" type="create" onclick="window.location.hash = '#create';">
+				<!-- <button class="toCreate" type="create" onclick="window.location.hash = 'create';"> -->
+					<i class="fa-solid fa-user-plus"></i> Creare New User
+				</button>
 			</form>
 		</div>
 		<div class="card" id="create" style="display: none;">
-		<!-- <div class="create_user" style="display: none;"> -->
 			<h1>Create New User</h1>
-			<form action="/admin/create_user" method="post" id="create_user_form">
-				<label class="newuser" for="username">
-					<!-- font awesome icon -->
-					<i class="fa-solid fa-user"></i>
-				</label>
-				<input type="text" name="newusername" placeholder="USERNAME" id="newusername" required>
-				<br>
-				<label class="newuser" for="password">
-					<i class="fa-solid fa-lock"></i>
-				</label>
-				<input type="password" name="newpassword" placeholder="PASSWORD" id="newpassword" minlength="6" required>
-				<label class="newuser" for="password">
-					<i class="fa-solid fa-lock"></i>
-				</label>
-				<input type="password" name="newpassword_check" placeholder="PASSWORD AGAIN" id="newpassword_check" minlength="6" required>
-				<label class="checkbox-user form-control" for="checkbox" id="checkbox-isAdmin">
-					<input type="checkbox" name="isAdmin" id="isAdmin" onchange="toggleCheckbox(this)"/>
-					
-					Administrator & SUDO Privileges
-				</label>
-				<label style="height: 20px; width:200px; background-color: #00000000;"></label>
-				<label class="checkbox-user form-control" for="checkbox" id="checkbox-server">
-					<input type="checkbox" name="server" id="server" checked/>
-					Connect After Created
-				</label>
-				<label class="msg-label">
-					<p class="msg" id="msg"></p>
-				</label>
-				<input class="newuser" type="submit" value="Create" id="submit">
-			</form>
+			<form action="/admin/create" method="post">
+                <div class="user-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-user"></i></label>
+                    <input type="text" name="username" placeholder="USERNAME" id="username" required>
+                </div>
+                <div class="user-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
+                    <input type="password" name="password" placeholder="PASSWORD" id="password" required>
+                </div>
+				<div class="user-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
+                    <input type="password" name="password-check" placeholder="PASSWORD AGAIN" id="password-check" required>
+                </div>
+				<div class="checkbox-group">
+					<label class="form-control checkbox-user" for="checkbox">
+						<input type="checkbox" name="setAdmin" onchange="toggleAdminUser(this)"/>
+						<p onclick="toggleSetAdmin()">Administrator & SUDO Privileges</p>
+					</label>
+					<label class="form-control checkbox-user" for="checkbox">
+						<input type="checkbox" name="setConnect" checked/>
+						<p onclick="toggleSetConnect()">Connect After Created</p>
+					</label>
+				</div>
+                <label class="msg-label">
+                    <p class="msg error" id="msg-error"></p>
+                </label>
+                <label class="msg-label">
+                    <p class="msg reminder" id="msg-reminder"></p>
+                </label>
+				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
+                <input type="submit" value="Create" class="create-user">
+            </form>
 		</div>
 		<div class="card" id="confirm" style="display: none;">
-			<!-- <div class="create_user" style="display: none;"> -->
 			<h1 id="confirm-title">Confirm Table</h1>
 			<h2 id="confirm-info"></h2>
 			<form action="/admin/manage" method="post">
-				<label class="newuser" for="username">
-					<i class="fa-solid fa-user"></i>
-				</label>
-				<input type="text" name="changeusername" placeholder="USERNAME" id="changeusername" required disabled>
-				<label class="newuser" for="username">Type</label>
-				<input type="text" name="changetype" id="changetype" required disabled>
-				<label class="newuser" for="username" id="changevalue-icon">Value</label>
-				<input type="text" name="changevalue" id="changevalue" required disabled>
-				<label class="newuser" for="password" style="display: none;" id="changepassword-icon"><i class="fa-solid fa-lock"></i></label>
-				<input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required style="display: none;">
-				<label class="newuser" for="password" style="display: none;" id="changepassword-check-icon"><i class="fa-solid fa-lock"></i></label>
-				<input type="password" name="changepassword-check" placeholder="PASSWORD AGAIN" id="changepassword-check" minlength="6" required style="display: none;">
+				<div class="user-card changeusername-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-user"></i></label>
+                    <input type="text" name="username" placeholder="USERNAME" id="changeusername" required disabled>
+                </div>
+				<div class="user-card changetype-card">
+                    <label class="user-lable icon-login-user">Type</label>
+                    <input type="text" name="changetype" placeholder="NAN" id="changetype" required disabled>
+                </div>
+				<div class="user-card changevalue-card">
+                    <label class="user-lable icon-login-user">Value</label>
+                    <input type="text" name="changevalue" placeholder="NAN" id="changevalue" required disabled>
+                </div>
+				<div class="user-card changepassword-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
+                    <input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required disabled>
+                </div>
+				<div class="user-card changepassword-check-card">
+                    <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
+                    <input type="password" name="changepassword-check" placeholder="PASSWORD AGAIN" id="changepassword-check" minlength="6" required disabled>
+                </div>
 				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
 				<input class="submit" type="submit" value="Confirm" id="confirm-submit">
 			</form>
 		</div>
 	</body>
 </html>
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-<script src="/code-server-plus/js/admin.js" type="text/javascript"></script>
-<script type="text/javascript">
-	const msg = '';
-	const msgType = '';
-	const loginUsername = '';
-	const handleUsername = '';
-    window.onload = function(){
-		$(window).on('hashchange', function(){
-			$('.card').css('display','none');
-			$(window.location.hash).css('display','inherit');
-		}).trigger('hashchange');
-		if (!window.location.hash) {
-			window.location.href = '#manage'; 
-		}
-		document.getElementById("newusername").value = newusername;
-		
-		if (msgType=="create user") document.getElementById('msg').innerHTML = msg;
-	}
-</script>

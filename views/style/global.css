@@ -64,7 +64,7 @@ form input[type="submitDisable"] {
 }
 
 .form-control + .form-control {
-  margin-top: 1em;
+  margin-top: -5px;
 }
 
 .form-control--disabled {
@@ -166,66 +166,6 @@ form label[for=checkbox] {
 }
 .user-lable:hover {
   cursor: pointer;
-}
-
-.icon-user{
-  background-color: #3578ca;
-  color: #ffffff;
-}
-
-.icon-user:hover{
-  background-color: #d69f27;
-  color: #ffffff;
-}
-
-.icon-admin{
-  background-color: #d69f27;
-  color: #ffffff;
-}
-
-.icon-admin:hover{
-  background-color: #3578ca;
-  color: #ffffff;
-}
-
-.icon-connect{
-  background-color: #6eee47;
-  color: #ffffff;
-}
-
-.icon-connect:hover{
-  background-color: #999999;
-  color: #ffffff;
-}
-
-.icon-disconnect{
-  background-color: #999999;
-  color: #ffffff;
-}
-
-.icon-disconnect:hover{
-  background-color: #6eee47;
-  color: #ffffff;
-}
-
-.icon-key{
-  background-color: #b68315;
-  color: #ffffff;
-}
-
-.icon-key:hover{
-  background-color: #b68315;
-  color: #333333;
-}
-
-.icon-delete{
-  background-color: #666666;
-  color: #ffffff;
-}
-
-.icon-delete:hover{
-  background-color: red;
-  color: #ffffff;
 }
 
 .icon-login-user{
