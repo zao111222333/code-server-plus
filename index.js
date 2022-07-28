@@ -86,7 +86,7 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
 app.get('/login', function(req, res) {
   const limit = req.session.attempt >= 5;
   fs.readFile('./views/login.html', 'utf8', function (err,data) {
-    if (err) {return console.log(err);}
+    if (err) {console.log(err);return}
     var data = data.replace('limit = false', 'limit = '+limit);
     if (req.session.msg) data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
     if (req.session.msgType) data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
@@ -105,11 +105,8 @@ app.post('/login', function(req, res) {
 	let password = req.body.password;
 	let toAdmin = req.body.toAdmin;
 	if (username && password) {
-    exec(command.listValidUser(), {shell: "/bin/bash"}, (error, stdout, stderr) => {
-      if (error) {console.log(`error: ${error.message}`);return;}
-      if (stderr) {console.log(`stderr: ${stderr}`);return;}
-      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      const validUser = text.split(",");
+    command.listValidUser((err, validUser) => {
+      if (err) {console.log(err);return}
       console.log('validUser: '+validUser);
       if (!validUser.includes(username)) {
         msgResponse('Invalid Username','login-error','',username,req,res);
@@ -118,11 +115,8 @@ app.post('/login', function(req, res) {
           if (err) {
             msgResponse('Incorrect Password','login-error','',username,req,res);
           }else {
-            exec(command.listAdminUser(), {shell: "/bin/bash"}, (error, stdout, stderr) => {
-              if (error) {console.log(`error: ${error.message}`);return;}
-              if (stderr) {console.log(`stderr: ${stderr}`);return;}
-              let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-              const adminUser = text.split(",");
+            command.listAdminUser((err, adminUser) => {
+              if (err) {console.log(err);return}
               req.session.isAdmin = adminUser.includes(username);
               console.log('adminUser: '+adminUser);
               console.log("Login: username="+username);
@@ -151,7 +145,12 @@ app.get("/logout", function (req, res) {
   if (req.session.login) {
     res.sendFile(path.join(__dirname + '/views/logout.html'));
   } else {
-    res.sendFile(path.join(__dirname + '/views/return.html'));
+    // res.sendFile(path.join(__dirname + '/views/return.html'));
+    fs.readFile('./views/return.html', 'utf8', function (err,data) {
+      if (err) {console.log(err);return}
+      data = data.replace('msg = \'\'', 'msg = \'You have NOT Login!\'');
+      res.send(data);
+    });
   }
 });
 app.post('/logout', function(req, res) {
@@ -162,21 +161,12 @@ app.post('/logout', function(req, res) {
 // admin
 app.get('/admin', function(req, res) {
   if (req.session.login && req.session.isAdmin) {
-    exec(command.listAdminUser(), {shell: "/bin/bash"}, (error, stdout, stderr) => {
-      if (error) {console.log(`error: ${error.message}`);return;}
-      if (stderr) {console.log(`stderr: ${stderr}`);return;}
-      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-      const adminUser = text.split(",");
-      exec(command.listValidUser(), {shell: "/bin/bash"}, (error, stdout, stderr) => {
-        if (error) {console.log(`error: ${error.message}`);return;}
-        if (stderr) {console.log(`stderr: ${stderr}`);return;}
-        let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-        const validUser = text.split(",");
-        exec(command.listConnectUser(), {shell: "/bin/bash"}, (error, stdout, stderr) => {
-          if (error) {console.log(`error: ${error.message}`);return;}
-          if (stderr) {console.log(`stderr: ${stderr}`);return;}
-          let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
-          const connectUser = text.split(",");
+    command.listAdminUser((err, adminUser) => {
+      if (err) {console.log(err);return}
+      command.listValidUser((err, validUser) => {
+        if (err) {console.log(err);return}
+        command.listConnectUser((err, connectUser) => {
+          if (err) {console.log(err);return}
           let users = [];
           let admins = [];
           validUser.forEach((user, i) => {
@@ -189,7 +179,7 @@ app.get('/admin', function(req, res) {
           users.sort();
           admins.sort();
           fs.readFile('./views/admin.html', 'utf8', function (err,data) {
-            if (err) {return console.log(err);}
+            if (err) {console.log(err);return}
             if (req.session.msg) data = data.replace('msg = \'\'', 'msg = \''+req.session.msg+'\'');
             if (req.session.msgType) data = data.replace('msgType = \'\'', 'msgType = \''+req.session.msgType+'\'');
             if (req.session.loginUsername) data = data.replace('loginUsername = \'\'', 'loginUsername = \''+req.session.loginUsername+'\'');
@@ -201,7 +191,12 @@ app.get('/admin', function(req, res) {
       });
     });
   } else {
-    res.sendFile(path.join(__dirname + '/views/return.html'));
+    // res.sendFile(path.join(__dirname + '/views/return.html'));
+    fs.readFile('./views/return.html', 'utf8', function (err,data) {
+      if (err) {console.log(err);return}
+      data = data.replace('msg = \'\'', 'msg = \'You are NOT Admin!\'');
+      res.send(data);
+    });
   }
 });
 
@@ -259,4 +254,4 @@ server.on('upgrade', function (req, socket, head) {
   }
 });
 
-server.listen(8000);
+server.listen(config.port);

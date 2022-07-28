@@ -40,8 +40,8 @@
 							<i class="fa-solid fa-lock"></i>
 						</label>
 						<input type="password" name="newpassword_check" placeholder="PASSWORD AGAIN" id="newpassword_check" minlength="6" required>
-						<label class="checkbox-user form-control" for="checkbox" id="checkbox-sudo">
-							<input type="checkbox" name="sudo" id="sudo" onchange="toggleCheckbox(this)"/>
+						<label class="checkbox-user form-control" for="checkbox" id="checkbox-isAdmin">
+							<input type="checkbox" name="isAdmin" id="isAdmin" onchange="toggleCheckbox(this)"/>
 							
 							Administrator & SUDO Privileges
 						</label>
@@ -226,11 +226,11 @@
  	  if (element.checked){
 		$('.newuser').removeClass().addClass("newadmin");
 		$('#checkbox-server').removeClass("checkbox-user").addClass("checkbox-admin");
-		$('#checkbox-sudo').removeClass("checkbox-user").addClass("checkbox-admin");
+		$('#checkbox-isAdmin').removeClass("checkbox-user").addClass("checkbox-admin");
 	  } else {
 		$('.newadmin').removeClass().addClass("newuser");
 		$('#checkbox-server').removeClass("checkbox-admin").addClass("checkbox-user");
-		$('#checkbox-sudo').removeClass("checkbox-admin").addClass("checkbox-user");
+		$('#checkbox-isAdmin').removeClass("checkbox-admin").addClass("checkbox-user");
 	  }
  	}	
 </script>
