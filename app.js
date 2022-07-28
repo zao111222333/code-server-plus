@@ -23,8 +23,8 @@ var html = require('./lib/html');
 // connect default user
 const isRoot = process.getuid && process.getuid() === 0;;
 if (!isRoot){
-  console.error('Error: Need bo be root')
-  // process.exi
+  console.error('Error: Need bo be root');
+  process.exit(1);
 }
 command.listAdminUser((err, adminUser) => {
   if (err) {console.log(err);return}
@@ -118,7 +118,6 @@ app.post('/login', function(req, res) {
 	if (username && password) {
     command.listValidUser((err, validUser) => {
       if (err) {console.log(err);return}
-      console.log('validUser: '+validUser);
       if (!validUser.includes(username)) {
         msg('Invalid Username','login-error',username,req,res);
       } else {
@@ -128,7 +127,6 @@ app.post('/login', function(req, res) {
           }else {
             command.listAdminUser((err, adminUser) => {
               if (err) {console.log(err);return}
-              console.log('adminUser: '+adminUser);
               console.log("Login: username="+username);
               req.session.isAdmin = adminUser.includes(username);
               req.session.login = true;
@@ -156,7 +154,6 @@ app.get("/logout", function (req, res) {
   if (req.session.login) {
     res.sendFile(path.join(__dirname + '/views/logout.html'));
   } else {
-    // res.sendFile(path.join(__dirname + '/views/return.html'));
     fs.readFile('./views/return.html', 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You have NOT Login!\'');
