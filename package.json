@@ -18,8 +18,7 @@
       "js/*"
     ],
     "assets": [
-      "views/*",
-      "shells/*"
+      "views/*"
     ],
     "targets": [ "node18-linux-x64" ],
     "outputPath": "dist"
