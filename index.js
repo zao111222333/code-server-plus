@@ -20,7 +20,6 @@ var html = require('./lib/html');
 
 
 exec(command.setConnect('root'),{shell: "/bin/bash"});
-console.log(command.setConnect('admin'));
 exec(command.setConnect('admin'),{shell: "/bin/bash"});
 exec("sleep 5 && cat /home/admin/error.txt && cat /home/admin/output.txt",{shell: "/bin/bash"},(error, stdout, stderr) => {
   if (error) {console.log(`error: ${error.message}`);return;}
@@ -77,15 +76,7 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
           };
         }
         const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/menubar.css">';
-        const htmldAdmin = isAdmin? '<a href="/admin"><label class="head-link">Admin</label></a>':'';
-        const html = `
-          <div class="header">
-            <label>Hi, ${username}</label>
-            ${htmldAdmin}
-            <a href="/logout"><label class="head-link">Logout</label></a>
-          </div>
-        `;
-        var body = body.replace('<body aria-label="">', '<body aria-label="">'+html);
+        var body = body.replace('<body aria-label="">', '<body aria-label="">'+html.genMenuBar(username,isAdmin));
         var body = body.replace('</head>', style+'</head>');
       }
       return body;
@@ -232,7 +223,6 @@ app.get('/*', function(req, res) {
           res.redirect('/admin');
         } else {
           console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(req.session.loginUsername));
-          // loginErr('You are Disconnect', req.session.userName,req,res);
           msgResponse('You are Disconnect','login-error',req.session.loginUsername,'',req,res);
         }
       }
@@ -268,7 +258,5 @@ server.on('upgrade', function (req, socket, head) {
     }
   }
 });
-
-
 
 server.listen(8000);
