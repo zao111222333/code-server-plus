@@ -192,7 +192,8 @@ app.get('/admin', function(req, res) {
           const msg = req.session.msg ? req.session.msg : '';
           const msgType = req.session.msgType ? req.session.msgType : '';
           const username = req.session.handleUsername ? req.session.handleUsername : '';
-          const js = `<script src="/code-server-plus/js/admin.js" msg="${msg}" msgType="${msgType}" username="${username}" type="text/javascript"></script>`;
+          const hasSetAdmin = req.session.hasSetAdmin ? req.session.hasSetAdmin : '';
+          const js = `<script src="/code-server-plus/js/admin.js" msg="${msg}" msgType="${msgType}" username="${username}" hasSetAdmin="${hasSetAdmin}" type="text/javascript"></script>`;
           const userInfoHtml = html.genUserCard(req.session.loginUsername,users,admins,connectUser);
           fs.readFile('./views/admin.html', 'utf8', function (err,data) {
             if (err) {console.log(err);return}
@@ -204,7 +205,6 @@ app.get('/admin', function(req, res) {
       });
     });
   } else {
-    // res.sendFile(path.join(__dirname + '/views/return.html'));
     fs.readFile('./views/return.html', 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You are NOT Admin!\'');
@@ -237,6 +237,39 @@ app.get('/*', function(req, res) {
   } else {
     res.redirect('/login');
   }
+});
+
+app.post('/admin/create', function(req, res) {
+  if (req.session.isAdmin) {
+      req.session.hasSetAdmin = false;
+      let username = req.body.username;
+      let password = req.body.password;
+      let passwordCheck = req.body.passwordCheck;
+      let setAdmin = req.body.setAdmin? true:false;
+      let setConnect = req.body.setConnect ? true:false;
+      if (!(passwordCheck==password)) {
+        msg("Passwords Do NOT Match","create-user-error",username,req,res);
+        return;
+      };
+      command.listValidUser((err, validUser) => {
+        if (err) {console.log(err);return}
+        if (validUser.includes(username)) {
+          msg("User Already Exist","create-user-error",username,req,res);
+        } else {
+          command.createUser(username,password,setAdmin);
+          if (setConnect) {
+            command.setConnect(username)
+          };
+          req.session.hasSetAdmin=setAdmin;
+          req.session.handleUsername=username;
+          req.session.msg='Success';
+          req.session.msgType='create user success';
+          res.redirect('/admin#create');
+        }
+      });
+    } else {
+      res.redirect('/');
+    }
 });
 
 

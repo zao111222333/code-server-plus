@@ -27,7 +27,6 @@
 					<p id="msg"></p>
 				</label>
 				<button class="toCreate" type="create" onclick="window.location.hash = '#create';">
-				<!-- <button class="toCreate" type="create" onclick="window.location.hash = 'create';"> -->
 					<i class="fa-solid fa-user-plus"></i> Creare New User
 				</button>
 			</form>
@@ -45,7 +44,7 @@
                 </div>
 				<div class="user-card">
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
-                    <input type="password" name="password-check" placeholder="PASSWORD AGAIN" id="password-check" required>
+                    <input type="password" name="passwordCheck" placeholder="PASSWORD AGAIN" id="passwordCheck" required>
                 </div>
 				<div class="checkbox-group">
 					<label class="form-control checkbox-user" for="checkbox">
@@ -58,10 +57,7 @@
 					</label>
 				</div>
                 <label class="msg-label">
-                    <p class="msg error" id="msg-error"></p>
-                </label>
-                <label class="msg-label">
-                    <p class="msg reminder" id="msg-reminder"></p>
+                    <p class="msg" id="create-msg"></p>
                 </label>
 				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
                 <input type="submit" value="Create" class="create-user">
@@ -87,9 +83,9 @@
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
                     <input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required disabled>
                 </div>
-				<div class="user-card changepassword-check-card">
+				<div class="user-card changepasswordCheck-card">
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
-                    <input type="password" name="changepassword-check" placeholder="PASSWORD AGAIN" id="changepassword-check" minlength="6" required disabled>
+                    <input type="password" name="changepasswordCheck" placeholder="PASSWORD AGAIN" id="changepasswordCheck" minlength="6" required disabled>
                 </div>
 				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
 				<input class="submit" type="submit" value="Confirm" id="confirm-submit">

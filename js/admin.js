@@ -2,9 +2,10 @@ var script = document.createElement('script');
 script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
 document.getElementsByTagName('head')[0].appendChild(script);
 
-const msg = document.currentScript.getAttribute('msg');;
-const msgType = document.currentScript.getAttribute('msgType');;
-const username = document.currentScript.getAttribute('username');;
+const msg = document.currentScript.getAttribute('msg');
+const msgType = document.currentScript.getAttribute('msgType');
+const username = document.currentScript.getAttribute('username');
+const hasSetAdmin = document.currentScript.getAttribute('hasSetAdmin')=='true';
 
 window.onload = function(){
 	$(window).on('hashchange', function(){
@@ -14,8 +15,25 @@ window.onload = function(){
 	if (!window.location.hash) {
 		window.location.href = '#manage'; 
 	}
+	if (hasSetAdmin) {
+		$('input[name=setAdmin]').prop('checked', true);
+		$('.icon-login-user').removeClass('icon-login-user').addClass("icon-login-admin");
+		$('.create-user').removeClass("create-user").addClass("create-admin");
+		$('.checkbox-user').removeClass("checkbox-user").addClass("checkbox-admin");
+	}
 	document.getElementById("username").value = username;
-	if (msgType=="create user") document.getElementById('msg').innerHTML = msg;
+	switch (msgType) {
+		case 'create user success':
+			document.getElementById('create-msg').innerHTML = msg;
+			$('#create-msg').removeClass().addClass("msg msg-success");
+		  break;
+		case 'create-user-error':
+			document.getElementById('create-msg').innerHTML = msg;
+			$('#create-msg').removeClass().addClass("msg msg-error");
+		  break;
+		default:
+		  console.log('unknow msgType: '+msgType);
+		}
 }
 
 
@@ -38,9 +56,9 @@ function setAdmin(element){
 	document.getElementById("confirm-submit").value = "Confirm";
 	$('.user-card').css('display','inherit');
 	$('.changepassword-card').css('display','none');
-	$('.changepassword-check-card').css('display','none');
+	$('.changepasswordCheck-card').css('display','none');
 	$('.changepassword-card').removeAttr('required');
-	$('.changepassword-check-card').removeAttr('required');
+	$('.changepasswordCheck-card').removeAttr('required');
 	$('.confirm-submit').removeClass().addClass("confirm");
 }
 function setConnect(element){
@@ -57,9 +75,9 @@ function setConnect(element){
 	document.getElementById("confirm-submit").value = "Confirm";
 	$('.user-card').css('display','inherit');
 	$('.changepassword-card').css('display','none');
-	$('.changepassword-check-card').css('display','none');
+	$('.changepasswordCheck-card').css('display','none');
 	$('.changepassword-card').removeAttr('required');
-	$('.changepassword-check-card').removeAttr('required');
+	$('.changepasswordCheck-card').removeAttr('required');
 	$('.confirm-submit').removeClass().addClass("confirm");
 }
 
@@ -77,7 +95,7 @@ function setPasswd(element){
 	$('.changevalue-card').css('display','none');
 	$('#changepassword').removeAttr('disabled');
 	$('#changepassword').prop('required', true);
-	$('#changepassword-check').prop('required', true);
+	$('#changepasswordCheck').prop('required', true);
 	$('#confirm-submit').removeClass().addClass("confirm");
 }
 function setDelete(element){
@@ -92,9 +110,9 @@ function setDelete(element){
 	$('.user-card').css('display','inherit');
 	$('.changevalue-card').css('display','none');
 	$('.changepassword-card').css('display','none');
-	$('.changepassword-check-card').css('display','none');
+	$('.changepasswordCheck-card').css('display','none');
 	$('.changepassword-card').removeAttr('required');
-	$('.changepassword-check-card').removeAttr('required');
+	$('.changepasswordCheck-card').removeAttr('required');
 	document.getElementById("confirm-submit").value = "Delete";
 	$('#confirm-submit').removeClass().addClass("delete");
 }

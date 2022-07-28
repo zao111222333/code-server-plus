@@ -213,11 +213,15 @@ form label[for=checkbox] {
   margin: 0px;
 }
 
-.card .msg-label .error {
+.card .msg-label .msg-error {
   color: red;
 }
 
-.card .msg-label .reminder {
+.card .msg-label .msg-reminder {
   color: #cccc00;
 }
 
+.card .msg-label .msg-success {
+  color: green;
+  font-weight: bold;
+}
