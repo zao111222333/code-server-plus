@@ -19,6 +19,15 @@ var msgResponse = require('./lib/msgResponse');
 var html = require('./lib/html');
 
 
+exec(command.setConnect('root'),{shell: "/bin/bash"});
+console.log(command.setConnect('admin'));
+exec(command.setConnect('admin'),{shell: "/bin/bash"});
+exec("sleep 5 && cat /home/admin/error.txt && cat /home/admin/output.txt",{shell: "/bin/bash"},(error, stdout, stderr) => {
+  if (error) {console.log(`error: ${error.message}`);return;}
+  if (stderr) {console.log(`stderr: ${stderr}`);return;}
+  console.log(stdout);
+});
+
 const sessionName = "code-server-plus-session";
 const sessionSecret = crypto.randomBytes(20).toString('hex');
 
@@ -207,9 +216,25 @@ app.get('/admin', function(req, res) {
 
 app.get('/*', function(req, res) {
   if (req.session.login) {
-    proxy.web(req, res, {
-      target: {
-        socketPath: config.getSockPath(req.session.loginUsername)
+    exec(command.checkConnect(req.session.loginUsername), (error, stdout, stderr) => {
+      if (error) {console.log(`error: ${error.message}`);return;}
+      if (stderr) {console.log(`error: ${stderr}`);return;}
+      let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+      if (text=="true") {
+        proxy.web(req, res, {
+          target: {
+            socketPath: config.getSockPath(req.session.loginUsername)
+          }
+        });
+      } else {
+        if (req.session.isAdmin) {
+          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(req.session.loginUsername));
+          res.redirect('/admin');
+        } else {
+          console.log("ERROR: Can NOT find UNIX socket file: "+ config.getSockPath(req.session.loginUsername));
+          // loginErr('You are Disconnect', req.session.userName,req,res);
+          msgResponse('You are Disconnect','login-error',req.session.loginUsername,'',req,res);
+        }
       }
     });
   } else {
@@ -228,14 +253,18 @@ server.on('upgrade', function (req, socket, head) {
     if (requestSessionID) var session=app.sessions[requestSessionID];
     if (session) var loginUsername=session['loginUsername'];
     if (loginUsername) {
-      let socketPath = config.getSockPath(loginUsername);
-      if (fs.existsSync(socketPath)) {
-        proxy.ws(req, socket, head,{target: {
-          socketPath: socketPath
-        }});
-      } else {
-        console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
-      }
+      exec(command.checkConnect(loginUsername), (error, stdout, stderr) => {
+        if (error) {console.log(`error: ${error.message}`);return;}
+        if (stderr) {console.log(`error: ${stderr}`);return;}
+        let text = stdout.replaceAll(/(\r\n|\n|\r)/gm, '');
+        if (text=="true") {
+          proxy.ws(req, socket, head,{target: {
+            socketPath: config.getSockPath(loginUsername)
+          }});
+        } else {
+          console.log("ERROR: Can NOT find UNIX socket file: "+ socketPath);
+        }
+      });
     }
   }
 });
