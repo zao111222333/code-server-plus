@@ -11,23 +11,23 @@
     "http-proxy-response-rewrite": "^0.0.1"
   },
   "devDependencies": {
-      "pkg": "^5.8.0"
-    },
+    "pkg": "^5.8.0"
+  },
   "pkg": {
-      "scripts": [
-        "js/*"
-      ],
-      "assets": [
-        "views/*",
-        "shells/*"
-      ],
-      "targets": [ "node18-linux-x64" ],
-      "outputPath": "dist"
-    },
+    "scripts": [
+      "js/*"
+    ],
+    "assets": [
+      "views/*",
+      "shells/*"
+    ],
+    "targets": [ "node18-linux-x64" ],
+    "outputPath": "dist"
+  },
   "scripts": {
-      "build": "pkg .",
-      "run": "node app.js 8000",
-      "run:build": "dist/code-server-plus 8000",
-      "env": "node ci/dev/env.js"
-    }
+    "build": "pkg .",
+    "run": "node app.js 8000",
+    "run:build": "dist/code-server-plus 8000",
+    "env": "node ci/dev/env.js"
+  }
 }
