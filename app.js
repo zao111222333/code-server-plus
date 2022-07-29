@@ -269,6 +269,53 @@ app.post('/admin/create', function(req, res) {
     }
 });
 
+app.post('/admin/manage', function(req, res) {
+  if (req.session.isAdmin) {
+    let changeusername = req.body.changeusername;
+    let changetype = req.body.changetype;
+    let changevalue = req.body.changevalue;
+    let password = req.body.password;
+    let passwordCheck = req.body.passwordCheck;
+    let command = '';
+    console.log(changetype);
+    console.log(changevalue);
+    switch (changetype) {
+      case 'setAdmin':
+        if (changevalue=='toUser') {
+          command = 'toUser '+changeusername;
+        }
+        if (changevalue=='toAdmin') {
+          command = 'toAdmin '+changeusername;
+        }
+        break;
+      case 'setConnect':
+        if (changevalue=='toDisconnect') {
+          command = 'toDisconnect '+changeusername;
+        }
+        if (changevalue=='toConnect') {
+          command = 'toConnect '+changeusername;
+        }
+        break;
+      case 'setPassword':
+        if (!(password==passwordCheck)) {
+          createErr("Passwords Do NOT Match",changeusername,req,res);
+          return;
+        };
+        command = 'setPassword '+changeusername+" "+passwordCheck;
+        break;
+      case 'setDelete':
+          command = 'setDelete '+changeusername;
+          break;
+      default:
+        console.log('None');
+      }
+      console.log(command);
+      res.redirect('/admin#confirm_table');
+  } else {
+    res.redirect('/');
+  }
+});
+
 
 var server = http.createServer(app);
 // Proxy websockets
