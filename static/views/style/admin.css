@@ -101,7 +101,7 @@ h2 {
   color: #ffffff;
 }
 
-form input[type="cancel"] {
+form input[type="return"] {
   width: 100%;
   padding: 15px;
   background-color: #dee0e4;
@@ -113,12 +113,12 @@ form input[type="cancel"] {
   transition: background-color 0.2s;
   margin-bottom: 0;
 }
-form input[type="cancel"]:hover {
+form input[type="return"]:hover {
   background-color: #666666;
   color: #dee0e4;
   transition: background-color 0.2s;
 }
-form input[type="cancel"] + input[type="submit"] {
+form input[type="return"] + input[type="submit"] {
   margin-top: 0px;
 }
 
@@ -159,19 +159,6 @@ form input[type="submit"] {
   transition: background-color 0.2s;
 }
 
-form input.create-user[type="submit"] {
-  background-color: #3578ca;
-}
-form input.create-user[type="submit"]:hover {
-  background-color: #2868c7;
-}
-form input.create-admin[type="submit"] {
-  background-color: #d69f27;
-}
-form input.create-admin[type="submit"]:hover {
-  background-color: #9e751c;
-}
-
 form button[type="create"] {
   width: 100%;
   padding: 15px;
@@ -190,3 +177,40 @@ form button[type="create"]:hover {
   transition: background-color 0.2s;
 }
 
+.user-card input:read-only {
+  background-color: rgb(247,249,245);
+  color: rgb(117,117,117);
+  user-select: none;
+}
+
+/* form .user-card + .msg-label {
+  margin: 0px;
+  padding: 0px
+} */
+
+form input.create-user[type="submit"] {
+  background-color: #3578ca;
+}
+form input.create-user[type="submit"]:hover {
+  background-color: #2868c7;
+}
+form input.create-admin[type="submit"] {
+  background-color: #d69f27;
+}
+form input.create-admin[type="submit"]:hover {
+  background-color: #9e751c;
+}
+form input.create-user[type="return"] {
+  background-color: #3578ca;
+  color: white;
+}
+form input.create-user[type="return"]:hover{
+  background-color: #2868c7;
+}
+form input.create-admin[type="return"] {
+  background-color: #d69f27;
+  color: white;
+}
+form input.create-admin[type="return"]:hover{
+  background-color: #9e751c;
+}

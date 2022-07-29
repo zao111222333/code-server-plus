@@ -17,7 +17,6 @@ form input{
   width: 310px;
   height: 50px;
   border: 1px solid #dee0e4;
-  margin-bottom: 20px;
   padding: 0 15px;
 }
 
@@ -132,6 +131,7 @@ form label[for=checkbox] {
   background-color: #ffffff00;
   margin-top: -15px;
   color: #757575;
+  user-select: none;
   flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
@@ -142,13 +142,13 @@ form label[for=checkbox] {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .user-info {
   width: 160px;
   height: 50px;
   border: 1px solid #dee0e4;
-  margin-bottom: 20px;
   padding: 0 15px;
   background-color: rgb(247, 249, 245);
   color: #555555;

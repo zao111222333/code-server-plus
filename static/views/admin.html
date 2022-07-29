@@ -59,8 +59,8 @@
                 <label class="msg-label">
                     <p class="msg" id="create-msg"></p>
                 </label>
-				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
-                <input type="submit" value="Create" class="create-user">
+				<input type="return" id="create-return" value="Cancel"  onclick="createReturn()" readonly>
+                <input type="submit" id="create-submit" value="Create" class="create-user">
             </form>
 		</div>
 		<div class="card" id="confirm" style="display: none;">
@@ -69,25 +69,28 @@
 			<form action="/admin/manage" method="post">
 				<div class="user-card changeusername-card">
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-user"></i></label>
-                    <input type="text" name="username" placeholder="USERNAME" id="changeusername" required disabled>
+                    <input type="text" name="changeusername" placeholder="USERNAME" id="changeusername" required readonly>
                 </div>
 				<div class="user-card changetype-card">
                     <label class="user-lable icon-login-user">Type</label>
-                    <input type="text" name="changetype" placeholder="NAN" id="changetype" required disabled>
+                    <input type="text" name="changetype" placeholder="NAN" id="changetype" required readonly>
                 </div>
 				<div class="user-card changevalue-card">
                     <label class="user-lable icon-login-user">Value</label>
-                    <input type="text" name="changevalue" placeholder="NAN" id="changevalue" required disabled>
+                    <input type="text" name="changevalue" placeholder="NAN" id="changevalue" required readonly>
                 </div>
 				<div class="user-card changepassword-card">
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
-                    <input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required disabled>
+                    <input type="password" name="changepassword" placeholder="PASSWORD" id="changepassword" minlength="6" required readonly>
                 </div>
 				<div class="user-card changepasswordCheck-card">
                     <label class="user-lable icon-login-user"><i class="fa-solid fa-lock"></i></label>
-                    <input type="password" name="changepasswordCheck" placeholder="PASSWORD AGAIN" id="changepasswordCheck" minlength="6" required disabled>
+                    <input type="password" name="changepasswordCheck" placeholder="PASSWORD AGAIN" id="changepasswordCheck" minlength="6" required readonly>
                 </div>
-				<input type="cancel"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
+				<label class="msg-label" style="margin-top: -10px;margin-bottom: 10px">
+                    <p class="msg" id="confirm-msg"></p>
+                </label>
+				<input type="return"  value="Cancel"  onclick="window.location.hash = '#manage'" readonly>
 				<input class="submit" type="submit" value="Confirm" id="confirm-submit">
 			</form>
 		</div>

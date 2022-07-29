@@ -238,6 +238,17 @@ app.get('/*', function(req, res) {
 
 app.post('/admin/create', function(req, res) {
   if (req.session.isAdmin) {
+    if(req.body.retrunType){
+      console.log(req.body.retrunType)
+      if(req.body.retrunType=='ok'){
+        console.log(req.body.retrunType)
+        req.session.hasSetAdmin='';
+        req.session.handleUsername='';
+        req.session.msg='';
+        req.session.msgType='';
+      }
+      res.redirect('/admin#manage');
+    }else{      
       req.session.hasSetAdmin = false;
       let username = req.body.username;
       let password = req.body.password;
@@ -253,64 +264,64 @@ app.post('/admin/create', function(req, res) {
         if (validUser.includes(username)) {
           msg("User Already Exist","create-user-error",username,req,res);
         } else {
-          command.createUser(username,password,setAdmin);
-          if (setConnect) {
-            command.setConnect(username)
-          };
+          command.createUser(username,password,setAdmin,setConnect);
           req.session.hasSetAdmin=setAdmin;
           req.session.handleUsername=username;
           req.session.msg='Success';
-          req.session.msgType='create user success';
+          req.session.msgType='create-user-success';
           res.redirect('/admin#create');
         }
       });
+    }
     } else {
       res.redirect('/');
     }
-});
-
-app.post('/admin/manage', function(req, res) {
+  });
+  
+  app.post('/admin/manage', function(req, res) {
   if (req.session.isAdmin) {
     let changeusername = req.body.changeusername;
     let changetype = req.body.changetype;
     let changevalue = req.body.changevalue;
-    let password = req.body.password;
-    let passwordCheck = req.body.passwordCheck;
-    let command = '';
+    let password = req.body.changepassword;
+    let passwordCheck = req.body.changepasswordCheck;
+    // let command = '';
     console.log(changetype);
     console.log(changevalue);
     switch (changetype) {
       case 'setAdmin':
         if (changevalue=='toUser') {
-          command = 'toUser '+changeusername;
+          command.unsetAdmin(changeusername);
         }
         if (changevalue=='toAdmin') {
-          command = 'toAdmin '+changeusername;
+          command.setAdmin(changeusername);
         }
         break;
       case 'setConnect':
         if (changevalue=='toDisconnect') {
-          command = 'toDisconnect '+changeusername;
+          command.setDisconnect(changeusername);
+          // command = 'toDisconnect '+changeusername;
         }
         if (changevalue=='toConnect') {
-          command = 'toConnect '+changeusername;
+          command.setConnect(changeusername);
         }
         break;
       case 'setPassword':
         if (!(password==passwordCheck)) {
-          createErr("Passwords Do NOT Match",changeusername,req,res);
+          msg('Passwords Do NOT Match','manage-error',changeusername,req,res);
           return;
-        };
-        command = 'setPassword '+changeusername+" "+passwordCheck;
+        } else {
+          command.setPassword(changeusername,password);
+        }
+        // command = 'setPassword '+changeusername+" "+passwordCheck;
         break;
       case 'setDelete':
-          command = 'setDelete '+changeusername;
+          command.deleteUser(changeusername);
           break;
       default:
-        console.log('None');
+        console.log('Change Type NO MATCH: '+changetype);
       }
-      console.log(command);
-      res.redirect('/admin#confirm_table');
+      res.redirect('/admin#confirm');
   } else {
     res.redirect('/');
   }

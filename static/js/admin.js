@@ -10,7 +10,7 @@ const hasSetAdmin = document.currentScript.getAttribute('hasSetAdmin')=='true';
 window.onload = function(){
 	$(window).on('hashchange', function(){
 		$('.card').css('display','none');
-		$(window.location.hash).css('display','inherit');
+		$(window.location.hash).css('display','');
 	}).trigger('hashchange');
 	if (!window.location.hash) {
 		window.location.href = '#manage'; 
@@ -23,19 +23,42 @@ window.onload = function(){
 	}
 	document.getElementById("username").value = username;
 	switch (msgType) {
-		case 'create user success':
+		case 'create-user-success':
 			document.getElementById('create-msg').innerHTML = msg;
 			$('#create-msg').removeClass().addClass("msg msg-success");
+			document.getElementById('create-return').value = "OK";
+			$('#create-submit').css('display','none');
+			if (hasSetAdmin) {
+				$('#create-return').removeClass().addClass("create-admin");
+			} else {
+				$('#create-return').removeClass().addClass("create-user");
+			}
 		  break;
 		case 'create-user-error':
 			document.getElementById('create-msg').innerHTML = msg;
 			$('#create-msg').removeClass().addClass("msg msg-error");
-		  break;
+			break;
+		case 'manage-error':
+			document.getElementById('confirm-msg').innerHTML = msg;
+			$('#confirm-msg').removeClass().addClass("msg msg-error");
+		  	break;
 		default:
-		  console.log('unknow msgType: '+msgType);
-		}
+		  	console.log('unknow msgType: '+msgType);
+	}
 }
 
+function createReturn(){
+	document.getElementById('create-return').value = "Cancel";
+	$('#create-return').removeClass();
+	$('#create-submit').css('display','');
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", '/admin/create', true);
+	xhr.setRequestHeader('Content-Type', 'application/json');
+	xhr.send(JSON.stringify({
+	    retrunType: msgType=='create-user-success'? 'ok':'cancel'
+	}));
+	window.location.hash = '#manage'
+}
 
 function getUserInfo(element){
 	const [username,admin,connect] = element.parentElement.id.split("/");
@@ -45,6 +68,7 @@ function getUserInfo(element){
 }
 function setAdmin(element){
 	window.location.hash = '#confirm';
+	document.getElementById('confirm-msg').innerHTML = '';
 	const [username,isAdmin,isConnect] = getUserInfo(element);
 	const confirmInfo = isAdmin? "You will change <b>"+username+"</b> (Admin User) into Normal User." 
 		: "You will change <b>"+username+"</b> (Normal User) into Admin User." ;
@@ -54,7 +78,7 @@ function setAdmin(element){
 	document.getElementById("changetype").value = "setAdmin";
 	document.getElementById("changevalue").value = isAdmin?"toUser":"toAdmin";
 	document.getElementById("confirm-submit").value = "Confirm";
-	$('.user-card').css('display','inherit');
+	$('.user-card').css('display','');
 	$('.changepassword-card').css('display','none');
 	$('.changepasswordCheck-card').css('display','none');
 	$('.changepassword-card').removeAttr('required');
@@ -63,6 +87,7 @@ function setAdmin(element){
 }
 function setConnect(element){
 	window.location.hash = '#confirm';
+	document.getElementById('confirm-msg').innerHTML = '';
 	const [username,isAdmin,isConnect] = getUserInfo(element);
 	const confirmInfo = isConnect? 
 		  "You will change <b>"+username+"</b> into <b>Disconnect</b>." 
@@ -73,7 +98,7 @@ function setConnect(element){
 	document.getElementById("changetype").value = "setConnect";
 	document.getElementById("changevalue").value = isConnect?"toDisconnect":"toConnect";
 	document.getElementById("confirm-submit").value = "Confirm";
-	$('.user-card').css('display','inherit');
+	$('.user-card').css('display','');
 	$('.changepassword-card').css('display','none');
 	$('.changepasswordCheck-card').css('display','none');
 	$('.changepassword-card').removeAttr('required');
@@ -81,8 +106,9 @@ function setConnect(element){
 	$('.confirm-submit').removeClass().addClass("confirm");
 }
 
-function setPasswd(element){
+function setPassword(element){
 	window.location.hash = '#confirm';
+	document.getElementById('confirm-msg').innerHTML = '';
 	const [username,isAdmin,isConnect] = getUserInfo(element);
 	const confirmInfo = "You will set the password for <b>"+username+"</b>." ;
 	document.getElementById('confirm-info').innerHTML = confirmInfo;
@@ -91,15 +117,17 @@ function setPasswd(element){
 	document.getElementById("changetype").value = "setPassword";
 	document.getElementById("confirm-submit").value = "Confirm";
 	document.getElementById("changevalue").value = "";
-	$('.user-card').css('display','inherit');
+	$('.user-card').css('display','');
 	$('.changevalue-card').css('display','none');
-	$('#changepassword').removeAttr('disabled');
+	$('#changepassword').removeAttr('readonly');
+	$('#changepasswordCheck').removeAttr('readonly');
 	$('#changepassword').prop('required', true);
 	$('#changepasswordCheck').prop('required', true);
 	$('#confirm-submit').removeClass().addClass("confirm");
 }
 function setDelete(element){
 	window.location.hash = '#confirm';
+	document.getElementById('confirm-msg').innerHTML = '';
 	const [username,isAdmin,isConnect] = getUserInfo(element);
 	const confirmInfo = "You will delete <b>"+username+"</b>!!!"
 	document.getElementById('confirm-info').innerHTML = confirmInfo;
@@ -107,7 +135,7 @@ function setDelete(element){
 	document.getElementById("changeusername").value = username;
 	document.getElementById("changetype").value = "setDelete";
 	document.getElementById("changevalue").value = "";
-	$('.user-card').css('display','inherit');
+	$('.user-card').css('display','');
 	$('.changevalue-card').css('display','none');
 	$('.changepassword-card').css('display','none');
 	$('.changepasswordCheck-card').css('display','none');
