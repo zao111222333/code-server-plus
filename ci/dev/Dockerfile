@@ -7,7 +7,8 @@ RUN apt-get update -y && apt-get upgrade -y \
     wget \
     ca-certificates \
     build-essential \
-    git
+    git \
+    ssh
 ENV CODE_VERSION  4.5.1
 RUN cd /tmp \
  && wget -q https://github.com/coder/code-server/releases/download/v${CODE_VERSION}/code-server_${CODE_VERSION}_amd64.deb \
