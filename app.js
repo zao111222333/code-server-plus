@@ -66,8 +66,9 @@ app.use(session({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/code-server-plus/views',express.static('./static/views'));
-app.use('/code-server-plus/js',express.static('./static/js'));
+app.use('/code-server-plus/views',express.static(path.join(__dirname +'/static/views')));
+app.use('/code-server-plus/style',express.static(path.join(__dirname +'/static/style')));
+app.use('/code-server-plus/js',express.static(path.join(__dirname +'/static/js')));
 app.use(sessions);
 
 
@@ -88,7 +89,7 @@ proxy.on('proxyRes', function (proxyRes, req, res) {
             isAdmin=session['isAdmin'];
           };
         }
-        const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/views/style/menubar.css">';
+        const style = '<link rel="stylesheet" type="text/css" href="/code-server-plus/style/menubar.css">';
         var body = body.replace('<body aria-label="">', '<body aria-label="">'+html.genMenuBar(username,isAdmin));
         var body = body.replace('</head>', style+'</head>');
       }
@@ -104,7 +105,7 @@ app.get('/login', function(req, res) {
   const username = (req.session.loginUsername && req.session.login) ? req.session.loginUsername : (
                    (req.session.handleUsername && !req.session.login)? req.session.handleUsername :'');
   const js = `<script src="/code-server-plus/js/login.js" limit="${limit}" msg="${msg}" msgType="${msgType}" attempt="${attempt}" username="${username}" type="text/javascript"></script>`;
-  fs.readFile('./static/views/login.html', 'utf8', function (err,data) {
+  fs.readFile(path.join(__dirname +'/static/views/login.html'), 'utf8', function (err,data) {
     if (err) {console.log(err);return}
     data = data.replace('<!-- include the js file -->', js);
     res.send(data);
@@ -154,7 +155,7 @@ app.get("/logout", function (req, res) {
   if (req.session.login) {
     res.sendFile(path.join(__dirname + '/static/views/logout.html'));
   } else {
-    fs.readFile('./static/views/return.html', 'utf8', function (err,data) {
+    fs.readFile(path.join(__dirname +'/static/views/return.html'), 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You have NOT Login!\'');
       res.send(data);
@@ -192,7 +193,7 @@ app.get('/admin', function(req, res) {
           const hasSetAdmin = req.session.hasSetAdmin ? req.session.hasSetAdmin : '';
           const js = `<script src="/code-server-plus/js/admin.js" msg="${msg}" msgType="${msgType}" username="${username}" hasSetAdmin="${hasSetAdmin}" type="text/javascript"></script>`;
           const userInfoHtml = html.genUserCard(req.session.loginUsername,users,admins,connectUser);
-          fs.readFile('./static/views/admin.html', 'utf8', function (err,data) {
+          fs.readFile(path.join(__dirname +'/static/views/admin.html'), 'utf8', function (err,data) {
             if (err) {console.log(err);return}
             data = data.replace('<!-- User Info -->', userInfoHtml);
             data = data.replace('<!-- include the js file -->', js);
@@ -202,7 +203,7 @@ app.get('/admin', function(req, res) {
       });
     });
   } else {
-    fs.readFile('./static/views/return.html', 'utf8', function (err,data) {
+    fs.readFile(path.join(__dirname +'/static/views/return.html'), 'utf8', function (err,data) {
       if (err) {console.log(err);return}
       data = data.replace('msg = \'\'', 'msg = \'You are NOT Admin!\'');
       res.send(data);

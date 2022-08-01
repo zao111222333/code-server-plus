@@ -18,7 +18,8 @@
       "static/js/*"
     ],
     "assets": [
-      "static/views/*"
+      "static/views/*",
+      "static/style/*"
     ],
     "targets": [ "node18-linux-x64" ],
     "outputPath": "dist"
