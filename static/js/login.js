@@ -1,5 +1,5 @@
 var script = document.createElement('script');
-script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js';
+script.src = '/code-server-plus/js/jquery.min.js';
 document.getElementsByTagName('head')[0].appendChild(script);
 
 var sec = 10;
