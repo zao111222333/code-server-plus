@@ -88,6 +88,7 @@ endef
 
 .PHONY: push
 push: ## push to git
+	$(call print-target)
 	git add .
 	git commit -m "update"
 	git push -u git@github.com:zao111222333/code-server-plus.git go
