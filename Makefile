@@ -85,3 +85,9 @@ help:
 define print-target
     @printf "Executing target: \033[36m$@\033[0m\n"
 endef
+
+.PHONY: push
+push: ## push to git
+	git add .
+	git commit -m "update"
+	git push -u git@github.com:zao111222333/code-server-plus.git go
