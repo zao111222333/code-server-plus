@@ -1,0 +1,8 @@
+{
+    "git.autofetch": true,
+    "workbench.colorTheme": "Default Dark+",
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.scrollback": 4000,
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs":"active"
+}
