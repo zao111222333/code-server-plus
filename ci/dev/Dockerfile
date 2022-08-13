@@ -50,7 +50,10 @@ RUN apt-get update -y && apt-get upgrade -y \
     sudo         \
     libpam0g-dev \
     bash
+COPY Makefile /build/Makefile
+RUN make install
 WORKDIR /build
+COPY ci/dev/docker/.ssh /root/.ssh
 COPY . /build
 # RUN npm run-script build
 EXPOSE 8000 8080
